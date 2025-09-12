@@ -209,28 +209,28 @@ include(__DIR__ . '/../includes/header.php');
       <i class="fas fa-map-marker-alt"></i>
       <div>
         <h3>Adresse</h3>
-        <p>Quartier Farabougou, Guinguinéo, Kaolack, Sénégal</p>
+        <p>Route Nationale 2 x VCN – Thiès</p>
       </div>
     </div>
     <div class="contact-info-item">
       <i class="fas fa-envelope"></i>
       <div>
         <h3>Email</h3>
-        <p>sowelhadjimamadou25@gmail.com</p>
+        <p>isep@isep-thies.edu.sn</p>
       </div>
     </div>
     <div class="contact-info-item">
       <i class="fas fa-phone"></i>
       <div>
-        <h3>Téléphone / WhatsApp</h3>
-        <p>+221 777 393 257</p>
+        <h3>Téléphone </h3>
+        <p>+221 33 951 24 257</p>
       </div>
     </div>
     <div class="contact-info-item">
       <i class="fas fa-clock"></i>
       <div>
         <h3>Horaires</h3>
-        <p>Lundi - Vendredi : 8h00 - 18h00</p>
+        <p>Lundi - Samedi : 8h00 - 18h30</p>
       </div>
     </div>
   </div>

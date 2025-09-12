@@ -219,7 +219,7 @@ include(__DIR__ . '/../includes/header.php');
     "Apprenez, progressez, excellez et devenez la meilleure version de vous-même." <br>
     "Chaque jour est une opportunité d'apprendre quelque chose de nouveau."
   </p>
-  <a href="register.php" style="display: inline-block; padding: 18px 40px; font-size: 20px; font-weight: bold; border-radius: 50px; background-color: #fff; color: #009688; text-decoration: none; transition: 0.3s;">
+  <a href="login.php" style="display: inline-block; padding: 18px 40px; font-size: 20px; font-weight: bold; border-radius: 50px; background-color: #fff; color: #009688; text-decoration: none; transition: 0.3s;">
     Commencer
   </a>
 </section>

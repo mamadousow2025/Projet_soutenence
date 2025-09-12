@@ -33,3 +33,4 @@ function requireRole($role_id) {
         exit("Accès refusé");
     }
 }
+

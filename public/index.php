@@ -310,7 +310,7 @@ session_start();
         <a href="contact.php">Contact</a>
       </nav>
       <div class="buttons">
-        <a href="register.php" class="btn-primary">S’inscrire</a>
+      
         <a href="login.php" class="btn-outline">Se connecter</a>
       </div>
     </div>
@@ -320,7 +320,7 @@ session_start();
   <section class="hero">
     <h1>Bienvenue sur la <span>Plateforme E-learning</span> de l’ISEP Thiès</h1>
     <p>Découvrez une nouvelle façon d’apprendre : cours en ligne, quiz, ressources pédagogiques et échanges interactifs.</p>
-    <a href="register.php">Commencer maintenant</a>
+    <a href="login.php">Commencer maintenant</a>
   </section>
 
 <?php
@@ -512,7 +512,7 @@ session_start();
   <section class="cta">
     <h2>Rejoignez dès aujourd’hui la plateforme ISEP Thiès</h2>
     <p>Inscrivez-vous gratuitement et accédez à des milliers de ressources pédagogiques adaptées à votre parcours.</p>
-    <a href="register.php">S’inscrire maintenant</a>
+    <a href="login.php">Connecter maintenant</a>
   </section>
 
   <!-- FOOTER -->
@@ -540,8 +540,8 @@ session_start();
 
     <div class="footer-column">
       <h3>Contact</h3>
-      <p><i class="fas fa-envelope"></i> Email : contact@isep-thies.sn</p>
-      <p><i class="fas fa-phone"></i> Tél : +221 77 000 00 00</p>
+      <p><i class="fas fa-envelope"></i> Email : isep@isep-thies.edu.sn</p>
+      <p><i class="fas fa-phone"></i> Tél : +221 33 951 24 25</p>
     </div>
   </div>
 

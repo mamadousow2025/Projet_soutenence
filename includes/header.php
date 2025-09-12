@@ -310,7 +310,7 @@ session_start();
         <a href="contact.php">Contact</a>
       </nav>
       <div class="buttons">
-        <a href="register.php" class="btn-primary">S’inscrire</a>
+       
         <a href="login.php" class="btn-outline">Se connecter</a>
       </div>
     </div>

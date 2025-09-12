@@ -23,8 +23,8 @@
 
     <div class="footer-column">
       <h3>Contact</h3>
-      <p><i class="fas fa-envelope"></i> Email : contact@isep-thies.sn</p>
-      <p><i class="fas fa-phone"></i> Tél : +221 77 000 00 00</p>
+      <p><i class="fas fa-envelope"></i> Email : isep@isep-thies.edu.sn</p>
+      <p><i class="fas fa-phone"></i> Tél : +221 33 951 24 25</p>
     </div>
   </div>
 

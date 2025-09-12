@@ -416,7 +416,7 @@ showItems();
 <section class="join-us">
   <h2>Rejoignez-nous dès aujourd’hui !</h2>
   <p>Commencez votre parcours académique avec la meilleure plateforme pour les apprenants de l’ISEP Abdoulaye Ly de Thiès. Apprenez, progressez et excellez !</p>
-  <a href="register.php">Commencer</a>
+  <a href="login.php">Commencer</a>
 </section>
 
 </body>

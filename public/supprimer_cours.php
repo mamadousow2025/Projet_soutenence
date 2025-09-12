@@ -9,10 +9,11 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role_id'] != 2) {
 
 $enseignant_id = $_SESSION['user_id'];
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cours_id']) && is_numeric($_POST['cours_id'])) {
-    $cours_id = intval($_POST['cours_id']);
+// Utiliser GET au lieu de POST
+if (isset($_GET['id']) && is_numeric($_GET['id'])) {
+    $cours_id = intval($_GET['id']);
 
-    // Vérifier que le cours appartient bien à l'enseignant
+    // Vérifier que le cours appartient à l'enseignant
     $stmt = $pdo->prepare("SELECT image_couverture, video_cours, pdf_cours FROM cours WHERE id = ? AND enseignant_id = ?");
     $stmt->execute([$cours_id, $enseignant_id]);
     $cours = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -32,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cours_id']) && is_num
     $stmtDelete = $pdo->prepare("DELETE FROM cours WHERE id = ? AND enseignant_id = ?");
     $stmtDelete->execute([$cours_id, $enseignant_id]);
 
-    // Redirection vers liste des cours (tu peux ajouter un message flash si besoin)
+    // Redirection vers liste des cours
     header("Location: cours.php?deleted=1");
     exit;
 } else {

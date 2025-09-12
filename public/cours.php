@@ -2,50 +2,58 @@
 session_start();
 require_once '../config/database.php';
 
+// Vérifier connexion et rôle enseignant
 if (!isset($_SESSION['user_id']) || $_SESSION['role_id'] != 2) {
     header("Location: login.php");
     exit;
 }
+
 $enseignant_id = $_SESSION['user_id'];
-
-$stmtFilieres = $pdo->query("SELECT id, nom FROM filieres ORDER BY nom");
-$filieres = $stmtFilieres->fetchAll(PDO::FETCH_ASSOC);
-
 $errors = [];
 $success = "";
+
+// Récupérer la filière assignée à l'enseignant
+$stmtFiliere = $pdo->prepare("SELECT f.id, f.nom FROM users u JOIN filieres f ON u.filiere_id = f.id WHERE u.id = ?");
+$stmtFiliere->execute([$enseignant_id]);
+$enseignantFiliere = $stmtFiliere->fetch(PDO::FETCH_ASSOC);
+
+if (!$enseignantFiliere) {
+    die("Votre filière n'est pas assignée. Contactez l'administrateur.");
+}
 
 // Traitement ajout cours
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_cours'])) {
     $titre = trim($_POST['titre']);
     $description = trim($_POST['description']);
-    $filiere_id = intval($_POST['filiere_id']);
+    $filiere_id = $enseignantFiliere['id'];
     $imagePath = null;
     $videoPath = null;
     $pdfPath = null;
 
-    // Validation titre et filière
+    // Validation titre
     if (empty($titre)) $errors[] = "Le titre est obligatoire.";
-    if ($filiere_id <= 0) $errors[] = "Veuillez choisir une filière valide.";
 
     // On impose que l'enseignant ne puisse pas ajouter vidéo ET pdf en même temps
     $hasVideo = isset($_FILES['video_cours']) && $_FILES['video_cours']['error'] === UPLOAD_ERR_OK;
     $hasPDF = isset($_FILES['pdf_cours']) && $_FILES['pdf_cours']['error'] === UPLOAD_ERR_OK;
 
     if ($hasVideo && $hasPDF) {
-        $errors[] = "Vous ne pouvez pas ajouter une vidéo et un PDF en même temps. Choisissez l'un ou l'autre.";
+        $errors[] = "Vous ne pouvez pas ajouter une vidéo et un PDF en même temps.";
     }
 
-    // Upload image couverture (optionnel)
+    // Upload image couverture
     if (isset($_FILES['image_couverture']) && $_FILES['image_couverture']['error'] === UPLOAD_ERR_OK) {
         $fileTmpPath = $_FILES['image_couverture']['tmp_name'];
         $fileName = basename($_FILES['image_couverture']['name']);
         $fileExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
         $allowedExts = ['jpg', 'jpeg', 'png', 'gif'];
+
         if (!in_array($fileExt, $allowedExts)) {
             $errors[] = "Image : formats autorisés jpg, jpeg, png, gif uniquement.";
         } else {
             $newFileName = uniqid('img_') . '.' . $fileExt;
             $destPath = __DIR__ . '/uploads/' . $newFileName;
+            
             if (!move_uploaded_file($fileTmpPath, $destPath)) {
                 $errors[] = "Erreur lors de l'upload de l'image.";
             } else {
@@ -54,17 +62,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_cours'])) {
         }
     }
 
-    // Upload vidéo (exclusif)
+    // Upload vidéo
     if ($hasVideo && empty($errors)) {
         $fileTmpPath = $_FILES['video_cours']['tmp_name'];
         $fileName = basename($_FILES['video_cours']['name']);
         $fileExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
         $allowedVideoExts = ['mp4', 'webm', 'ogg'];
+
         if (!in_array($fileExt, $allowedVideoExts)) {
             $errors[] = "Vidéo : formats autorisés mp4, webm, ogg uniquement.";
         } else {
             $newFileName = uniqid('vid_') . '.' . $fileExt;
             $destPath = __DIR__ . '/uploads/' . $newFileName;
+            
             if (!move_uploaded_file($fileTmpPath, $destPath)) {
                 $errors[] = "Erreur lors de l'upload de la vidéo.";
             } else {
@@ -73,16 +83,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_cours'])) {
         }
     }
 
-    // Upload PDF (exclusif)
+    // Upload PDF
     if ($hasPDF && empty($errors)) {
         $fileTmpPath = $_FILES['pdf_cours']['tmp_name'];
         $fileName = basename($_FILES['pdf_cours']['name']);
         $fileExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
         if ($fileExt !== 'pdf') {
             $errors[] = "PDF : format autorisé uniquement PDF.";
         } else {
             $newFileName = uniqid('pdf_') . '.' . $fileExt;
             $destPath = __DIR__ . '/uploads/' . $newFileName;
+            
             if (!move_uploaded_file($fileTmpPath, $destPath)) {
                 $errors[] = "Erreur lors de l'upload du PDF.";
             } else {
@@ -91,16 +103,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_cours'])) {
         }
     }
 
+    // Insertion dans la base
     if (empty($errors)) {
-        $stmt = $pdo->prepare("INSERT INTO cours (enseignant_id, titre, description, filiere_id, image_couverture, video_cours, pdf_cours) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        $stmt = $pdo->prepare("INSERT INTO cours (enseignant_id, titre, description, filiere_id, image_couverture, video_cours, pdf_cours, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())");
         $stmt->execute([$enseignant_id, $titre, $description, $filiere_id, $imagePath, $videoPath, $pdfPath]);
         $success = "Cours ajouté avec succès !";
-        // Clear POST to reset form after success
-        $_POST = [];
+        $_POST = []; // reset form
     }
 }
 
-// Récupérer les cours de l’enseignant
+// Récupérer les cours de l'enseignant
 $stmtCours = $pdo->prepare("
     SELECT c.*, f.nom AS filiere_nom 
     FROM cours c 
@@ -113,309 +125,824 @@ $cours = $stmtCours->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
-<html lang="fr" class="scroll-smooth">
+<html lang="fr">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Enseignant - Mes Cours</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/feather-icons"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Couleurs principales */
+        /* Variables et réinitialisation */
         :root {
-            --color-teal: #009688;
-            --color-orange: #FF9800;
+            --primary-color: #009688; /* Teal */
+            --secondary-color: #FF9800; /* Orange */
+            --accent-color: #E91E63;
+            --success-color: #4CAF50;
+            --warning-color: #FF5722;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --text-color: #333;
+            --text-light: #777;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
         }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            color: var(--text-color);
+            line-height: 1.6;
         }
-        /* Sidebar */
-        aside {
-            background-color: var(--color-teal);
-            color: #fff;
+
+        .container {
+            display: flex;
+            min-height: 100vh;
         }
-        aside a {
-            color: #b2dfdb;
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(to bottom, var(--primary-color), #00766C);
+            color: white;
+            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--box-shadow);
+            z-index: 100;
         }
-        aside a:hover {
-            color: #e0f2f1;
+
+        .sidebar-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
         }
-        .btn-teal {
-            background-color: var(--color-teal);
+
+        .sidebar-header h1 {
+            font-size: 1.5rem;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background-color: rgba(255, 255, 255, 0.15);
             color: white;
         }
-        .btn-teal:hover {
-            background-color: #00796b;
+
+        .nav-item i {
+            margin-right: 12px;
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
         }
-        .btn-orange {
-            background-color: var(--color-orange);
+
+        .sidebar-footer {
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: var(--transition);
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+        }
+
+        .logout-btn:hover {
+            background-color: rgba(255, 255, 255, 0.15);
             color: white;
         }
-        .btn-orange:hover {
-            background-color: #e67e22;
+
+        .logout-btn i {
+            margin-right: 10px;
         }
-        /* Card hover */
-        .card:hover {
-            box-shadow: 0 10px 20px rgba(0,0,0,0.12);
-            transform: translateY(-4px);
-            transition: all 0.3s ease;
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
         }
-        /* Ligne clamped */
-        .line-clamp-3 {
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;  
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .header h2 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .breadcrumb a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .breadcrumb i {
+            margin: 0 8px;
+            font-size: 0.8rem;
+        }
+
+        /* Messages */
+        .messages {
+            margin-bottom: 25px;
+            max-width: 900px;
+        }
+
+        .alert {
+            padding: 12px 15px;
+            border-radius: var(--border-radius);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .alert-error {
+            background-color: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #f44336;
+        }
+
+        .alert-success {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+        }
+
+        .alert i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+        /* Form Styles */
+        .card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 30px;
             overflow: hidden;
         }
-        /* Modal PDF */
-        .modal-bg {
-            background: rgba(0,0,0,0.6);
+
+        .card-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: linear-gradient(to right, var(--primary-color), #26A69A);
+            color: white;
         }
-        .modal-content {
+
+        .card-header h3 {
+            font-size: 1.4rem;
+        }
+
+        .card-body {
+            padding: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 150, 136, 0.2);
+        }
+
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .file-input {
+            padding: 8px 0;
+        }
+
+        .help-text {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 24px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background-color: #00897B;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn i {
+            font-size: 1.1rem;
+        }
+
+        /* Course Grid */
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .course-card {
             background: white;
-            max-width: 90vw;
-            max-height: 90vh;
-            overflow: auto;
-            border-radius: 8px;
-            padding: 1rem;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            border-top: 4px solid var(--primary-color);
+        }
+
+        .course-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .course-media {
+            height: 180px;
+            background-color: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
             position: relative;
         }
-        .close-btn {
-            position: absolute;
-            top: 8px;
-            right: 12px;
-            cursor: pointer;
+
+        .course-media img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .course-media video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .media-placeholder {
+            color: var(--text-light);
+            text-align: center;
+            padding: 20px;
+        }
+
+        .media-placeholder i {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            display: block;
+            color: #b0bec5;
+        }
+
+        .course-content {
+            padding: 20px;
+        }
+
+        .course-title {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .course-description {
+            color: var(--text-light);
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .course-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .course-filiere {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            background-color: #f1f5f9;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        .course-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.85rem;
+        }
+
+        .btn-edit {
+            background-color: var(--primary-color);
+        }
+
+        .btn-delete {
+            background-color: var(--secondary-color);
+        }
+
+        .btn-delete:hover {
+            background-color: #F57C00;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow: auto;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+        }
+
+        .modal-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(to right, var(--primary-color), #26A69A);
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .modal-header h3 {
+            font-size: 1.3rem;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
             font-size: 1.5rem;
+            cursor: pointer;
+            color: white;
+            transition: var(--transition);
+        }
+
+        .close-modal:hover {
+            color: #ffeb3b;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .modal-body iframe {
+            width: 100%;
+            height: 70vh;
+            border: none;
+        }
+
+        /* Badge for new courses */
+        .new-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 0.75rem;
             font-weight: bold;
-            color: #333;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                padding: 15px 0;
+            }
+            
+            .sidebar-nav {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            
+            .nav-item {
+                margin-bottom: 0;
+            }
+            
+            .courses-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 20px;
+            }
+            
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .header h2 {
+                font-size: 1.7rem;
+            }
+            
+            .card-body {
+                padding: 20px;
+            }
+            
+            .course-actions {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .sidebar-nav {
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .courses-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-group {
+                margin-bottom: 15px;
+            }
         }
     </style>
 </head>
-<body class="bg-gray-50 flex min-h-screen text-gray-800">
+<body>
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1><i class="fas fa-chalkboard-teacher"></i> Espace Enseignant</h1>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="teacher_dashboard.php" class="nav-item">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Tableau de bord</span>
+                </a>
+                <a href="#form-add" class="nav-item active">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Ajouter un cours</span>
+                </a>
+                <a href="#cours-list" class="nav-item">
+                    <i class="fas fa-book"></i>
+                    <span>Mes cours</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Calendrier</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    <span>Étudiants</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Statistiques</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Paramètres</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <a href="logout.php" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Déconnexion</span>
+                </a>
+            </div>
+        </aside>
 
-    <!-- Sidebar -->
-    <aside class="w-64 flex flex-col shadow-lg">
-        <div class="p-6 border-b border-teal-700 flex items-center space-x-3">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-              <path d="M12 14l9-5-9-5-9 5 9 5z" />
-              <path d="M12 14l6.16-3.422A12.083 12.083 0 0112 21.5a12.083 12.083 0 01-6.16-10.922L12 14z" />
-            </svg>
-            <h1 class="text-2xl font-bold text-white">Espace Enseignant</h1>
-        </div>
-        <nav class="flex-grow px-6 py-4 space-y-4">
-            <a href="#" class="flex items-center gap-3 font-semibold hover:text-white transition">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                    <path d="M3 12l2-2m0 0l7-7 7 7M13 5v6h6" />
-                </svg>
-                Tableau de bord
-            </a>
-            <a href="#form-add" class="flex items-center gap-3 hover:text-white transition">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                  <path d="M12 4v16m8-8H4" />
-                </svg>
-                Ajouter un cours
-            </a>
-            <a href="#cours-list" class="flex items-center gap-3 hover:text-white transition">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                  <path d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-                Mes cours
-            </a>
-        </nav>
-        <div class="p-6 border-t border-teal-700">
-            <a href="logout.php" class="text-red-300 hover:text-red-100 font-semibold flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                  <path d="M17 16l4-4m0 0l-4-4m4 4H7" />
-                </svg>
-                Déconnexion
-            </a>
-        </div>
-    </aside>
-
-    <!-- Main Content -->
-    <main class="flex-1 p-10 overflow-auto">
-
-        <h2 class="text-4xl font-extrabold text-teal-700 mb-10 border-b-4 border-orange-500 pb-2">Gestion des cours</h2>
-
-        <!-- Messages -->
-        <div id="messages" class="max-w-4xl mb-10">
-            <?php foreach ($errors as $err): ?>
-                <div class="mb-3 p-4 rounded-md bg-red-100 text-red-700 border border-red-300 shadow-sm"><?= htmlspecialchars($err) ?></div>
-            <?php endforeach; ?>
-            <?php if ($success): ?>
-                <div class="mb-3 p-4 rounded-md bg-green-100 text-green-700 border border-green-300 shadow-sm"><?= htmlspecialchars($success) ?></div>
-            <?php endif; ?>
-        </div>
-
-        <!-- Formulaire ajout cours -->
-        <section id="form-add" class="max-w-4xl bg-white p-10 rounded-2xl shadow-lg mb-16">
-            <h3 class="text-2xl font-semibold mb-8 text-teal-700 flex items-center gap-3 border-b-2 border-orange-500 pb-3">
-                <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-7 h-7 text-teal-600" fill="none" stroke="var(--color-teal)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                    <path d="M12 4v16m8-8H4" />
-                </svg>
-                Ajouter un nouveau cours
-            </h3>
-
-            <form method="POST" enctype="multipart/form-data" class="space-y-8" novalidate>
-                <input type="hidden" name="add_cours" value="1" />
-
-                <div>
-                    <label for="titre" class="block text-lg font-medium text-gray-700 mb-2">Titre du cours <span class="text-red-600">*</span></label>
-                    <input type="text" id="titre" name="titre" required
-                        value="<?= isset($_POST['titre']) ? htmlspecialchars($_POST['titre']) : '' ?>"
-                        placeholder="Ex : Introduction à la Programmation"
-                        class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-4 focus:ring-teal-400 transition" />
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="header">
+                <h2><i class="fas fa-book-open"></i> Gestion des Cours</h2>
+                <div class="breadcrumb">
+                    <a href="teacher_dashboard.php">Tableau de bord</a>
+                    <i class="fas fa-chevron-right"></i>
+                    <span>Mes cours</span>
                 </div>
+            </div>
 
-                <div>
-                    <label for="description" class="block text-lg font-medium text-gray-700 mb-2">Description</label>
-                    <textarea id="description" name="description" rows="5"
-                        placeholder="Une brève description du cours"
-                        class="w-full border border-gray-300 rounded-lg px-4 py-3 resize-none focus:outline-none focus:ring-4 focus:ring-teal-400 transition"><?= isset($_POST['description']) ? htmlspecialchars($_POST['description']) : '' ?></textarea>
+            <!-- Messages d'alerte -->
+            <div class="messages">
+                <?php foreach ($errors as $err): ?>
+                    <div class="alert alert-error">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <?= htmlspecialchars($err) ?>
+                    </div>
+                <?php endforeach; ?>
+                
+                <?php if ($success): ?>
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle"></i>
+                        <?= htmlspecialchars($success) ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+
+            <!-- Formulaire d'ajout de cours -->
+            <section id="form-add" class="card">
+                <div class="card-header">
+                    <i class="fas fa-plus-circle"></i>
+                    <h3>Ajouter un nouveau cours</h3>
                 </div>
-
-                <div>
-                    <label for="filiere_id" class="block text-lg font-medium text-gray-700 mb-2">Filière <span class="text-red-600">*</span></label>
-                    <select id="filiere_id" name="filiere_id" required
-                        class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-4 focus:ring-teal-400 transition">
-                        <option value="">-- Choisir une filière --</option>
-                        <?php foreach ($filieres as $f): ?>
-                            <option value="<?= $f['id'] ?>" <?= (isset($_POST['filiere_id']) && $_POST['filiere_id'] == $f['id']) ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($f['nom']) ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
+                
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data" novalidate>
+                        <input type="hidden" name="add_cours" value="1">
+                        
+                        <div class="form-group">
+                            <label for="titre">Titre du cours <span style="color: var(--warning-color)">*</span></label>
+                            <input type="text" id="titre" name="titre" required 
+                                   value="<?= isset($_POST['titre']) ? htmlspecialchars($_POST['titre']) : '' ?>" 
+                                   placeholder="Ex: Introduction à la Programmation" 
+                                   class="form-control">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <textarea id="description" name="description" rows="5" 
+                                      placeholder="Une brève description du cours" 
+                                      class="form-control"><?= isset($_POST['description']) ? htmlspecialchars($_POST['description']) : '' ?></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <p><strong>Filière :</strong> <?= htmlspecialchars($enseignantFiliere['nom']) ?></p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="image_couverture">Image de couverture (jpg, png, gif)</label>
+                            <input type="file" id="image_couverture" name="image_couverture" 
+                                   accept=".jpg,.jpeg,.png,.gif" class="file-input">
+                            <p class="help-text">Facultatif - Formats autorisés: jpg, jpeg, png, gif</p>
+                        </div>
+                        
+                        <p class="help-text" style="margin-bottom: 15px;">
+                            <i class="fas fa-info-circle"></i> Vous pouvez soit ajouter une vidéo <b>ou</b> un document PDF. Ne mettez pas les deux en même temps.
+                        </p>
+                        
+                        <div class="form-group">
+                            <label for="video_cours">Vidéo du cours (mp4, webm, ogg)</label>
+                            <input type="file" id="video_cours" name="video_cours" 
+                                   accept="video/mp4,video/webm,video/ogg" class="file-input">
+                            <p class="help-text">Facultatif - Formats autorisés: mp4, webm, ogg</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="pdf_cours">Document PDF (téléchargeable)</label>
+                            <input type="file" id="pdf_cours" name="pdf_cours" 
+                                   accept=".pdf" class="file-input">
+                            <p class="help-text">Facultatif - Format autorisé: PDF uniquement</p>
+                        </div>
+                        
+                        <button type="submit" class="btn">
+                            <i class="fas fa-plus-circle"></i>
+                            Ajouter le cours
+                        </button>
+                    </form>
                 </div>
+            </section>
 
-                <div>
-                    <label for="image_couverture" class="block text-lg font-medium text-gray-700 mb-2">Image de couverture (jpg, png, gif)</label>
-                    <input type="file" id="image_couverture" name="image_couverture" accept=".jpg,.jpeg,.png,.gif" class="block w-full text-gray-600" />
-                </div>
-
-                <p class="text-sm text-gray-600 mb-2 italic">Vous pouvez soit ajouter une vidéo <b>ou</b> un document PDF. Ne mettez pas les deux en même temps.</p>
-
-                <div>
-                    <label for="video_cours" class="block text-lg font-medium text-gray-700 mb-2">Vidéo du cours (mp4, webm, ogg)</label>
-                    <input type="file" id="video_cours" name="video_cours" accept="video/mp4,video/webm,video/ogg" class="block w-full text-gray-600" />
-                </div>
-
-                <div>
-                    <label for="pdf_cours" class="block text-lg font-medium text-gray-700 mb-2">Document PDF (téléchargeable)</label>
-                    <input type="file" id="pdf_cours" name="pdf_cours" accept=".pdf" class="block w-full text-gray-600" />
-                </div>
-
-                <button type="submit" class="btn-teal inline-flex items-center gap-3 font-semibold rounded-lg px-6 py-3 transition shadow-md hover:shadow-lg">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                        <path d="M12 4v16m8-8H4" />
-                    </svg>
-                    Ajouter le cours
-                </button>
-            </form>
-        </section>
-
-        <!-- Liste des cours -->
-        <section id="cours-list" class="max-w-7xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-
-            <?php if (count($cours) > 0): ?>
-                <?php foreach ($cours as $c): ?>
-                <article class="card bg-white rounded-2xl shadow-md overflow-hidden flex flex-col hover:shadow-xl transition transform hover:-translate-y-1">
-                    <div class="relative h-48 bg-gray-100 flex items-center justify-center overflow-hidden">
-                        <?php if ($c['image_couverture']): ?>
-                            <img src="<?= htmlspecialchars($c['image_couverture']) ?>" alt="Image couverture <?= htmlspecialchars($c['titre']) ?>" class="object-cover w-full h-full" />
-                        <?php elseif ($c['video_cours']): ?>
-                            <video controls class="object-contain max-h-48 bg-black w-full" preload="metadata">
-                                <source src="<?= htmlspecialchars($c['video_cours']) ?>" type="video/mp4" />
-                                Votre navigateur ne supporte pas la vidéo.
-                            </video>
-                        <?php elseif ($c['pdf_cours']): ?>
-                            <div class="flex flex-col items-center justify-center p-4">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-orange-500 mb-2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                                    <path d="M12 2v20m8-8H4" />
-                                </svg>
-                                <button 
-                                    onclick="openPdfModal('<?= htmlspecialchars($c['pdf_cours']) ?>')"
-                                    class="btn-orange px-4 py-2 rounded-lg font-semibold shadow hover:bg-orange-600 transition">
-                                    Visualiser le PDF
-                                </button>
+            <!-- Liste des cours -->
+            <section id="cours-list">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-book"></i>
+                        <h3>Mes cours (<?= count($cours) ?>)</h3>
+                    </div>
+                    
+                    <div class="card-body">
+                        <?php if (count($cours) > 0): ?>
+                            <div class="courses-grid">
+                                <?php foreach ($cours as $c): 
+                                    $isNew = (strtotime($c['created_at']) > strtotime('-3 days'));
+                                ?>
+                                    <div class="course-card">
+                                        <?php if ($isNew): ?>
+                                            <div class="new-badge">Nouveau</div>
+                                        <?php endif; ?>
+                                        
+                                        <div class="course-media">
+                                            <?php if ($c['image_couverture']): ?>
+                                                <img src="<?= htmlspecialchars($c['image_couverture']) ?>" alt="Image couverture <?= htmlspecialchars($c['titre']) ?>">
+                                            <?php elseif ($c['video_cours']): ?>
+                                                <video controls preload="metadata">
+                                                    <source src="<?= htmlspecialchars($c['video_cours']) ?>" type="video/mp4">
+                                                    Votre navigateur ne supporte pas la vidéo.
+                                                </video>
+                                            <?php elseif ($c['pdf_cours']): ?>
+                                                <div class="media-placeholder">
+                                                    <i class="far fa-file-pdf"></i>
+                                                    <span>Document PDF</span>
+                                                    <button onclick="openPdfModal('<?= htmlspecialchars($c['pdf_cours']) ?>')" class="btn btn-sm" style="margin-top: 10px;">
+                                                        Visualiser
+                                                    </button>
+                                                </div>
+                                            <?php else: ?>
+                                                <div class="media-placeholder">
+                                                    <i class="far fa-file-alt"></i>
+                                                    <span>Aucun média</span>
+                                                </div>
+                                            <?php endif; ?>
+                                        </div>
+                                        
+                                        <div class="course-content">
+                                            <h3 class="course-title"><?= htmlspecialchars($c['titre']) ?></h3>
+                                            <p class="course-description"><?= htmlspecialchars($c['description']) ?></p>
+                                            
+                                            <div class="course-meta">
+                                                <span class="course-filiere"><?= htmlspecialchars($c['filiere_nom']) ?></span>
+                                                
+                                                <div class="course-actions">
+                                                    <a href="modifier_cours.php?id=<?= $c['id'] ?>" class="btn btn-sm btn-edit">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <a href="supprimer_cours.php?id=<?= $c['id'] ?>" 
+                                                       onclick="return confirm('Voulez-vous vraiment supprimer ce cours ?');" 
+                                                       class="btn btn-sm btn-delete">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
                             </div>
                         <?php else: ?>
-                            <div class="text-gray-400 italic font-semibold">Pas d'image / vidéo / PDF</div>
+                            <div style="text-align: center; padding: 40px 20px; color: var(--text-light);">
+                                <i class="fas fa-book-open" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.5;"></i>
+                                <p style="font-size: 1.2rem;">Aucun cours ajouté pour le moment.</p>
+                                <p>Commencez par ajouter votre premier cours en utilisant le formulaire ci-dessus.</p>
+                            </div>
                         <?php endif; ?>
                     </div>
-                    <div class="p-6 flex flex-col justify-between flex-grow">
-                        <header>
-                            <h4 class="text-xl font-bold text-teal-700 truncate" title="<?= htmlspecialchars($c['titre']) ?>"><?= htmlspecialchars($c['titre']) ?></h4>
-                            <p class="mt-2 text-gray-700 line-clamp-3 whitespace-pre-line"><?= nl2br(htmlspecialchars($c['description'])) ?></p>
-                        </header>
-                        <div class="mt-4 flex justify-between items-center text-sm text-gray-600">
-                            <span class="font-semibold text-orange-500"><?= htmlspecialchars($c['filiere_nom']) ?></span>
-                            <time datetime="<?= htmlspecialchars($c['created_at']) ?>" class="italic"><?= date('d/m/Y', strtotime($c['created_at'])) ?></time>
-                        </div>
-                        <div class="mt-5 flex justify-between items-center gap-4">
+                </div>
+            </section>
+        </main>
+    </div>
 
-                            <?php if ($c['pdf_cours'] && !$c['video_cours']): ?>
-                            <a href="<?= htmlspecialchars($c['pdf_cours']) ?>" download
-                                class="btn-orange px-4 py-2 rounded-lg flex items-center gap-2 text-white hover:bg-orange-600 transition shadow-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                                    <path d="M12 4v16m8-8H4" />
-                                </svg>
-                                Télécharger PDF
-                            </a>
-                            <?php endif; ?>
-
-                            <a href="modifier_cours.php?id=<?= $c['id'] ?>" 
-                               class="text-teal-700 hover:text-teal-900 transition" title="Modifier">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                                    <path d="M15.232 5.232l3.536 3.536M9 11l6-6 3 3-6 6H9v-3z" />
-                                </svg>
-                            </a>
-
-                            <form method="POST" action="supprimer_cours.php" onsubmit="return confirm('Voulez-vous vraiment supprimer ce cours ?');" class="inline">
-                                <input type="hidden" name="cours_id" value="<?= $c['id'] ?>" />
-                                <button type="submit" class="text-red-600 hover:text-red-800" title="Supprimer">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                                        <path d="M19 7l-1 12a2 2 0 01-2 2H8a2 2 0 01-2-2L5 7m5-4h4m-4 0a2 2 0 00-2 2v0h8v0a2 2 0 00-2-2m-4 0v0" />
-                                    </svg>
-                                </button>
-                            </form>
-
-                        </div>
-                    </div>
-                </article>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <p class="text-gray-600 italic text-center col-span-full">Vous n'avez pas encore ajouté de cours.</p>
-            <?php endif; ?>
-        </section>
-
-    </main>
-
-    <!-- Modal PDF -->
-    <div id="pdfModal" class="fixed inset-0 hidden items-center justify-center modal-bg z-50">
+    <!-- Modal pour visualiser les PDF -->
+    <div id="pdfModal" class="modal">
         <div class="modal-content">
-            <button class="close-btn" onclick="closePdfModal()">×</button>
-            <iframe id="pdfViewer" src="" width="100%" height="80vh" frameborder="0"></iframe>
+            <div class="modal-header">
+                <h3>Visualisation du document PDF</h3>
+                <button class="close-modal" onclick="closePdfModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <iframe id="pdfFrame" src=""></iframe>
+            </div>
         </div>
     </div>
 
-<script>
-    feather.replace();
+    <script>
+        function openPdfModal(src) {
+            document.getElementById('pdfFrame').src = src;
+            document.getElementById('pdfModal').style.display = 'flex';
+        }
 
-    function openPdfModal(pdfUrl) {
-        const modal = document.getElementById('pdfModal');
-        const viewer = document.getElementById('pdfViewer');
-        viewer.src = pdfUrl;
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-    }
-    function closePdfModal() {
-        const modal = document.getElementById('pdfModal');
-        const viewer = document.getElementById('pdfViewer');
-        viewer.src = '';
-        modal.classList.remove('flex');
-        modal.classList.add('hidden');
-    }
-</script>
+        function closePdfModal() {
+            document.getElementById('pdfFrame').src = '';
+            document.getElementById('pdfModal').style.display = 'none';
+        }
 
+        // Fermer la modal en cliquant à l'extérieur
+        document.getElementById('pdfModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePdfModal();
+            }
+        });
+
+        // Gestion des ancres pour la navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId !== '#') {
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 20,
+                            behavior: 'smooth'
+                        });
+                    }
+                }
+            });
+        });
+    </script>
 </body>
 </html>
