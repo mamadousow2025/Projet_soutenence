@@ -32,7 +32,7 @@ try {
         max_participants INT DEFAULT 50,
         statut ENUM('planifie', 'en_cours', 'termine', 'annule') DEFAULT 'planifie',
         FOREIGN KEY (cours_id) REFERENCES cours(id) ON DELETE CASCADE,
-        FOREIGN KEY (teacher_id) REFERENCES utilisateurs(id) ON DELETE CASCADE
+        FOREIGN KEY (teacher_id) REFERENCES users(id) ON DELETE CASCADE
     )";
     
     $pdo->exec($create_table);
@@ -147,18 +147,33 @@ if ($user_role == 2) { // Enseignant
         }
     }
 } else { // Étudiant ou autre rôle
-    // Récupérer les sessions disponibles pour l'étudiant
-   $sessions_stmt = $pdo->prepare("
-    SELECT cd.*, c.titre as course_titre, u.prenom, u.nom
-    FROM cours_direct cd 
-    JOIN cours c ON cd.cours_id = c.id 
-    JOIN users u ON cd.teacher_id = u.id
-    WHERE cd.statut != 'annule'
-    ORDER BY cd.date_heure DESC
-");
-
-    $sessions_stmt->execute();
-    $sessions = $sessions_stmt->fetchAll(PDO::FETCH_ASSOC);
+    // Récupérer la filière de l'étudiant
+    $filiere_stmt = $pdo->prepare("SELECT filiere_id FROM users WHERE id = ?");
+    $filiere_stmt->execute([$user_id]);
+    $user_filiere = $filiere_stmt->fetch(PDO::FETCH_ASSOC);
+    
+    if ($user_filiere && isset($user_filiere['filiere_id'])) {
+        $filiere_id = $user_filiere['filiere_id'];
+        
+        // Récupérer les sessions disponibles pour l'étudiant selon sa filière
+        $sessions_stmt = $pdo->prepare("
+            SELECT cd.*, c.titre as course_titre, u.prenom, u.nom, f.nom as filiere_nom
+            FROM cours_direct cd 
+            JOIN cours c ON cd.cours_id = c.id 
+            JOIN users u ON cd.teacher_id = u.id
+            JOIN filieres f ON c.filiere_id = f.id
+            WHERE cd.statut != 'annule' 
+            AND c.filiere_id = ?
+            ORDER BY cd.date_heure DESC
+        ");
+        
+        $sessions_stmt->execute([$filiere_id]);
+        $sessions = $sessions_stmt->fetchAll(PDO::FETCH_ASSOC);
+    } else {
+        // Si l'étudiant n'a pas de filière définie, on ne montre aucun cours
+        $sessions = [];
+        $error_message = "Vous n'êtes inscrit dans aucune filière. Veuillez contacter l'administration.";
+    }
 }
 ?>
 
@@ -466,7 +481,12 @@ if ($user_role == 2) { // Enseignant
         <div class="bg-white p-6 rounded-lg shadow-md border border-gray-100">
             <h2 class="text-2xl font-bold text-primary-700 mb-6 flex items-center">
                 <i class="fas fa-list-ol mr-3 text-accent-500"></i>
-                Sessions de cours disponibles
+                Sessions de cours disponibles pour votre filière
+                <?php if (isset($filiere_id)): ?>
+                    <span class="ml-2 text-sm font-normal text-gray-600">
+                        (<?= htmlspecialchars($sessions[0]['filiere_nom'] ?? 'Votre filière') ?>)
+                    </span>
+                <?php endif; ?>
             </h2>
             
             <?php if (count($sessions) > 0): ?>
@@ -565,8 +585,8 @@ if ($user_role == 2) { // Enseignant
             <?php else: ?>
                 <div class="text-center py-8 text-gray-500 bg-gray-50 rounded-lg">
                     <i class="fas fa-calendar-times text-4xl mb-4 text-gray-400"></i>
-                    <p class="font-medium">Aucune session disponible.</p>
-                    <p class="text-sm mt-1">Aucun cours en direct n'est planifié pour le moment.</p>
+                    <p class="font-medium">Aucune session disponible pour votre filière.</p>
+                    <p class="text-sm mt-1">Aucun cours en direct n'est planifié pour votre filière pour le moment.</p>
                 </div>
             <?php endif; ?>
         </div>

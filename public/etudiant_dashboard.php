@@ -182,6 +182,13 @@ if ($filiere_id) {
     font-size: 0.75rem;
     font-weight: 600;
   }
+  
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
 </style>
 </head>
 
@@ -216,7 +223,7 @@ if ($filiere_id) {
         </a>
       </li>
       <li>
-        <a href="" data-target="quiz-devoirs" class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-sidebarHover transition-all relative">
+        <a href="#" data-target="quiz-devoirs" class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-sidebarHover transition-all relative">
           <i class="fas fa-tasks w-5 h-5"></i> 
           <span>Quiz & Devoirs</span>
           <?php if (count($quizs) + count($devoirs) > 0): ?>
@@ -225,18 +232,17 @@ if ($filiere_id) {
         </a>
       </li>
       <li>
-        <a href="messagerie.php" data-target="messagerie" class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-sidebarHover transition-all">
+        <!-- Correction du lien messagerie - retrait de data-target -->
+        <a href="messagerie.php" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-sidebarHover transition-all">
           <i class="fas fa-comments w-5 h-5"></i> 
           <span>Messagerie</span>
         </a>
-        
       </li>
       <li>
-       <a href="cours_direct.php" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-sidebarHover transition-all">
-  <i class="fas fa-video w-5 h-5"></i> 
-  <span>Cours en direct</span>
-</a>
-
+        <a href="cours_direct.php" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-sidebarHover transition-all">
+          <i class="fas fa-video w-5 h-5"></i> 
+          <span>Cours en direct</span>
+        </a>
       </li>
       <li>
         <a href="forum.php" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-sidebarHover transition-all">
@@ -470,8 +476,8 @@ if ($filiere_id) {
 
 <!-- SCRIPTS -->
 <script>
-  // Navigation entre les sections
-  const navLinks = document.querySelectorAll('.nav-link');
+  // Navigation entre les sections - uniquement pour les liens avec data-target
+  const navLinks = document.querySelectorAll('.nav-link[data-target]');
   const sections = document.querySelectorAll('.content-section');
 
   navLinks.forEach(link => {

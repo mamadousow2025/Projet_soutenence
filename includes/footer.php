@@ -1,118 +1,127 @@
- <!-- FOOTER -->
-<footer>
-  <div class="footer-container">
-    <div class="footer-column">
-      <h3>ISEP Thiès</h3>
-      <p>Votre partenaire pour un apprentissage moderne et réussi.</p>
-      <div class="social-icons">
-        <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
-        <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
-        <a href="#" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+<?php
+// footer.php
+?>
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-column">
+        <h3>ISEP Thiès</h3>
+        <p>Votre partenaire pour un apprentissage moderne et réussi.</p>
+        <div class="social-links">
+          <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+          <a href="#" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+      </div>
+
+      <div class="footer-column">
+        <h3>Liens rapides</h3>
+        <ul>
+          <li><a href="index.php"><i class="fas fa-chevron-right"></i> Accueil</a></li>
+          <li><a href="services.php"><i class="fas fa-chevron-right"></i> Nos services</a></li>
+          <li><a href="about.php"><i class="fas fa-chevron-right"></i> À propos</a></li>
+          <li><a href="contact.php"><i class="fas fa-chevron-right"></i> Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-column">
+        <h3>Contact</h3>
+        <p><i class="fas fa-envelope"></i> Email : isep@isep-thies.edu.sn</p>
+        <p><i class="fas fa-phone"></i> Tél : +221 33 951 24 25</p>
       </div>
     </div>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <div class="footer-column">
-      <h3>Liens rapides</h3>
-      <ul>
-        <li><a href="index.php"><i class="fas fa-chevron-right"></i> Accueil</a></li>
-        <li><a href="services.php"><i class="fas fa-chevron-right"></i> Nos services</a></li>
-        <li><a href="about.php"><i class="fas fa-chevron-right"></i> À propos</a></li>
-        <li><a href="contact.php"><i class="fas fa-chevron-right"></i> Contact</a></li>
-      </ul>
+
+    <div class="copy">
+      &copy; <?php echo date("Y"); ?> ISEP Thiès - Tous droits réservés
     </div>
-
-    <div class="footer-column">
-      <h3>Contact</h3>
-      <p><i class="fas fa-envelope"></i> Email : isep@isep-thies.edu.sn</p>
-      <p><i class="fas fa-phone"></i> Tél : +221 33 951 24 25</p>
-    </div>
-  </div>
-
-  <div class="footer-copy">
-    &copy; <?php echo date("Y"); ?> ISEP Thiès - Tous droits réservés
-  </div>
-
+  </footer>
+  
   <style>
+    /* FOOTER */
     footer {
-      background: #009688;
-      color: #fff;
-      padding: 50px 20px 20px 20px;
-      font-family: Arial, sans-serif;
+      background: var(--primary-dark);
+      color: var(--white);
+      padding: 70px 0 30px;
     }
 
-    .footer-container {
-      display: flex;
-      flex-wrap: wrap;
-      max-width: 1200px;
-      margin: auto;
+    footer .container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 40px;
-      justify-content: space-between;
     }
 
-    .footer-column {
-      flex: 1;
-      min-width: 250px;
-    }
-
-    .footer-column h3 {
-      font-size: 20px;
+    footer h3 {
       margin-bottom: 20px;
-      color: #FF9800;
+      font-size: 1.5rem;
+      position: relative;
+      padding-bottom: 10px;
     }
 
-    .footer-column p, .footer-column ul li a {
-      font-size: 16px;
-      color: #fff;
-      margin-bottom: 10px;
-      text-decoration: none;
+    footer h3:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 50px;
+      height: 3px;
+      background: var(--secondary);
     }
 
-    .footer-column ul {
+    footer ul {
       list-style: none;
-      padding: 0;
     }
 
-    .footer-column ul li {
-      margin-bottom: 10px;
+    footer ul li {
+      margin-bottom: 12px;
     }
 
-    .footer-column ul li a i {
-      margin-right: 8px;
-      color: #FF9800;
+    footer ul li a {
+      color: rgba(255, 255, 255, 0.8);
+      display: flex;
+      align-items: center;
+      transition: all 0.3s ease;
     }
 
-    .footer-column p i {
-      margin-right: 8px;
-      color: #FF9800;
+    footer ul li a i {
+      margin-right: 10px;
     }
 
-    .social-icons a {
-      color: #fff;
-      margin-right: 15px;
-      font-size: 18px;
-      transition: color 0.3s;
+    footer ul li a:hover {
+      color: var(--white);
+      transform: translateX(5px);
     }
 
-    .social-icons a:hover {
-      color: #FF9800;
+    .social-links {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
     }
 
-    .footer-copy {
+    .social-links a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--white);
+      transition: all 0.3s ease;
+    }
+
+    .social-links a:hover {
+      background: var(--secondary);
+      transform: translateY(-3px);
+    }
+
+    footer .copy {
       text-align: center;
-      margin-top: 30px;
-      font-size: 14px;
-      color: #fff;
-    }
-
-    @media (max-width: 768px) {
-      .footer-container {
-        flex-direction: column;
-        text-align: center;
-        gap: 30px;
-      }
-      .footer-column ul li a {
-        display: inline-block;
-      }
+      margin-top: 50px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.7);
     }
   </style>
-</footer>
+</body>
+</html>

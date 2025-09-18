@@ -237,7 +237,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <h1 class="text-xl font-bold text-gray-800">Espace Enseignant</h1>
         </div>
         <nav class="flex items-center space-x-6">
-            <a href="dashboard_enseignant.php" class="text-gray-600 hover:text-blue-500 transition-colors flex items-center">
+            <a href="teacher_dashboard.php" class="text-gray-600 hover:text-blue-500 transition-colors flex items-center">
                 <i class="fas fa-tachometer-alt mr-2"></i> Tableau de bord
             </a>
             <a href="../public/logout.php" class="text-gray-600 hover:text-blue-500 transition-colors flex items-center">

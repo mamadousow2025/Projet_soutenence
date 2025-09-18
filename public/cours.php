@@ -25,6 +25,7 @@ if (!$enseignantFiliere) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_cours'])) {
     $titre = trim($_POST['titre']);
     $description = trim($_POST['description']);
+    $annee = trim($_POST['annee']);
     $filiere_id = $enseignantFiliere['id'];
     $imagePath = null;
     $videoPath = null;
@@ -32,6 +33,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_cours'])) {
 
     // Validation titre
     if (empty($titre)) $errors[] = "Le titre est obligatoire.";
+    
+    // Validation année
+    if (empty($annee) || !in_array($annee, ['premiere', 'deuxieme'])) {
+        $errors[] = "Veuillez sélectionner une année valide.";
+    }
 
     // On impose que l'enseignant ne puisse pas ajouter vidéo ET pdf en même temps
     $hasVideo = isset($_FILES['video_cours']) && $_FILES['video_cours']['error'] === UPLOAD_ERR_OK;
@@ -52,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_cours'])) {
             $errors[] = "Image : formats autorisés jpg, jpeg, png, gif uniquement.";
         } else {
             $newFileName = uniqid('img_') . '.' . $fileExt;
-            $destPath = __DIR__ . '/uploads/' . $newFileName;
+            $destPath = _DIR_ . '/uploads/' . $newFileName;
             
             if (!move_uploaded_file($fileTmpPath, $destPath)) {
                 $errors[] = "Erreur lors de l'upload de l'image.";
@@ -73,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_cours'])) {
             $errors[] = "Vidéo : formats autorisés mp4, webm, ogg uniquement.";
         } else {
             $newFileName = uniqid('vid_') . '.' . $fileExt;
-            $destPath = __DIR__ . '/uploads/' . $newFileName;
+            $destPath = _DIR_ . '/uploads/' . $newFileName;
             
             if (!move_uploaded_file($fileTmpPath, $destPath)) {
                 $errors[] = "Erreur lors de l'upload de la vidéo.";
@@ -93,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_cours'])) {
             $errors[] = "PDF : format autorisé uniquement PDF.";
         } else {
             $newFileName = uniqid('pdf_') . '.' . $fileExt;
-            $destPath = __DIR__ . '/uploads/' . $newFileName;
+            $destPath = _DIR_ . '/uploads/' . $newFileName;
             
             if (!move_uploaded_file($fileTmpPath, $destPath)) {
                 $errors[] = "Erreur lors de l'upload du PDF.";
@@ -105,8 +111,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_cours'])) {
 
     // Insertion dans la base
     if (empty($errors)) {
-        $stmt = $pdo->prepare("INSERT INTO cours (enseignant_id, titre, description, filiere_id, image_couverture, video_cours, pdf_cours, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())");
-        $stmt->execute([$enseignant_id, $titre, $description, $filiere_id, $imagePath, $videoPath, $pdfPath]);
+        $stmt = $pdo->prepare("INSERT INTO cours (enseignant_id, titre, description, filiere_id, annee, image_couverture, video_cours, pdf_cours, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())");
+        $stmt->execute([$enseignant_id, $titre, $description, $filiere_id, $annee, $imagePath, $videoPath, $pdfPath]);
         $success = "Cours ajouté avec succès !";
         $_POST = []; // reset form
     }
@@ -505,12 +511,24 @@ $cours = $stmtCours->fetchAll(PDO::FETCH_ASSOC);
             border-top: 1px solid #eee;
         }
 
-        .course-filiere {
+        .course-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .course-filiere, .course-annee {
             font-size: 0.85rem;
             color: var(--text-light);
             background-color: #f1f5f9;
             padding: 4px 10px;
             border-radius: 20px;
+            display: inline-block;
+        }
+
+        .course-annee {
+            background-color: #e8f5e9;
+            color: #2e7d32;
         }
 
         .course-actions {
@@ -786,6 +804,19 @@ $cours = $stmtCours->fetchAll(PDO::FETCH_ASSOC);
                         </div>
                         
                         <div class="form-group">
+                            <label for="annee">Année <span style="color: var(--warning-color)">*</span></label>
+                            <select id="annee" name="annee" required class="form-control">
+                                <option value="">Sélectionnez une année</option>
+                                <option value="premiere" <?= (isset($_POST['annee']) && $_POST['annee'] === 'premiere') ? 'selected' : '' ?>>
+                                    Première année
+                                </option>
+                                <option value="deuxieme" <?= (isset($_POST['annee']) && $_POST['annee'] === 'deuxieme') ? 'selected' : '' ?>>
+                                    Deuxième année
+                                </option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
                             <label for="image_couverture">Image de couverture (jpg, png, gif)</label>
                             <input type="file" id="image_couverture" name="image_couverture" 
                                    accept=".jpg,.jpeg,.png,.gif" class="file-input">
@@ -831,6 +862,21 @@ $cours = $stmtCours->fetchAll(PDO::FETCH_ASSOC);
                             <div class="courses-grid">
                                 <?php foreach ($cours as $c): 
                                     $isNew = (strtotime($c['created_at']) > strtotime('-3 days'));
+                                    
+                                    // Conversion de l'année pour l'affichage
+                                    $anneeDisplay = '';
+                                    if (isset($c['annee'])) {
+                                        switch($c['annee']) {
+                                            case 'premiere':
+                                                $anneeDisplay = 'Première année';
+                                                break;
+                                            case 'deuxieme':
+                                                $anneeDisplay = 'Deuxième année';
+                                                break;
+                                            default:
+                                                $anneeDisplay = 'Non spécifiée';
+                                        }
+                                    }
                                 ?>
                                     <div class="course-card">
                                         <?php if ($isNew): ?>
@@ -866,7 +912,12 @@ $cours = $stmtCours->fetchAll(PDO::FETCH_ASSOC);
                                             <p class="course-description"><?= htmlspecialchars($c['description']) ?></p>
                                             
                                             <div class="course-meta">
-                                                <span class="course-filiere"><?= htmlspecialchars($c['filiere_nom']) ?></span>
+                                                <div class="course-info">
+                                                    <span class="course-filiere"><?= htmlspecialchars($c['filiere_nom']) ?></span>
+                                                    <?php if ($anneeDisplay): ?>
+                                                        <span class="course-annee"><?= htmlspecialchars($anneeDisplay) ?></span>
+                                                    <?php endif; ?>
+                                                </div>
                                                 
                                                 <div class="course-actions">
                                                     <a href="modifier_cours.php?id=<?= $c['id'] ?>" class="btn btn-sm btn-edit">
