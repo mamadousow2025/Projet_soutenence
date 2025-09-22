@@ -1,6 +1,7 @@
 <?php 
 session_start();
 
+
 // Connexion à la base
 require_once __DIR__ . '/../config/database.php';
 
@@ -15,7 +16,9 @@ if (!isAdmin()) {
 
 // Déterminer quelle section afficher par défaut
 $defaultSection = 'dashboard';
-if (isset($_GET['section']) && in_array($_GET['section'], ['dashboard', 'users', 'courses', 'projects', 'quizzes'])) {
+$sections = ['dashboard', 'users', 'courses', 'projects', 'quizzes', 'messagerie'];
+
+if (isset($_GET['section']) && in_array($_GET['section'], $sections)) {
     $defaultSection = $_GET['section'];
 }
 
@@ -43,6 +46,57 @@ if (isset($_GET['search']) && !empty($_GET['search'])) {
     $searchStmt->execute();
     $searchResults = $searchStmt->fetchAll(PDO::FETCH_ASSOC);
 }
+
+// Connexion à la base de données (exemple avec PDO)
+try {
+    $pdo = new PDO("mysql:host=localhost;dbname=lms_isep;charset=utf8", "root", "");
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch(PDOException $e) {
+    die("Erreur de connexion : " . $e->getMessage());
+}
+
+// =================== TRAITEMENT DES MESSAGES ===================
+// Traitement de l'envoi de message
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'send_message') {
+    $sujet = trim($_POST['sujet']);
+    $contenu = trim($_POST['contenu']);
+    $destinataire_id = (int)$_POST['destinataire_id'];
+    $expediteur_id = 3; // ID de l'admin corrigé
+    
+    if (!empty($sujet) && !empty($contenu) && $destinataire_id > 0) {
+        $stmt = $pdo->prepare("INSERT INTO messages (expediteur_id, destinataire_id, sujet, contenu, date_envoi, lu) VALUES (?, ?, ?, ?, NOW(), 0)");
+        $stmt->execute([$expediteur_id, $destinataire_id, $sujet, $contenu]);
+        $success_message = "Message envoyé avec succès !";
+    } else {
+        $error_message = "Veuillez remplir tous les champs.";
+    }
+}
+
+// Marquer un message comme lu
+if (isset($_GET['mark_read']) && is_numeric($_GET['mark_read'])) {
+    $message_id = (int)$_GET['mark_read'];
+    $stmt = $pdo->prepare("UPDATE messages SET lu = 1 WHERE id = ? AND destinataire_id = 3");
+    $stmt->execute([$message_id]);
+}
+
+// Récupérer les messages reçus pour l'administrateur
+$messages_recus = $pdo->query("SELECT m.id, m.sujet, m.contenu, m.date_envoi, m.lu,
+    u.nom AS expediteur_nom, u.prenom AS expediteur_prenom
+    FROM messages m
+    JOIN users u ON u.id = m.expediteur_id
+    WHERE m.destinataire_id = 3
+    ORDER BY m.date_envoi DESC");
+
+// Récupérer les messages envoyés par l'administrateur
+$messages_envoyes = $pdo->query("SELECT m.id, m.sujet, m.contenu, m.date_envoi,
+    u.nom AS destinataire_nom, u.prenom AS destinataire_prenom
+    FROM messages m
+    JOIN users u ON u.id = m.destinataire_id
+    WHERE m.expediteur_id = 3
+    ORDER BY m.date_envoi DESC");
+
+// Récupérer tous les utilisateurs pour la liste des destinataires
+$destinataires = $pdo->query("SELECT id, nom, prenom, role_id FROM users WHERE id != 3");
 
 // =================== STATISTIQUES GLOBALES ===================
 $totalUsers = $pdo->query("SELECT COUNT(*) FROM users")->fetchColumn();
@@ -775,6 +829,138 @@ $quizzes = $quizzStmt->fetchAll(PDO::FETCH_ASSOC);
             color: #fff;
         }
 
+        /* ========== MESSAGERIE STYLES ========== */
+        .messagerie-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .message-form {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .form-group select,
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid rgba(0, 150, 136, 0.2);
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+        }
+        
+        .form-group select:focus,
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #009688;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(0, 150, 136, 0.1);
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        
+        .message-list {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .message-item {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            padding: 20px 0;
+            transition: all 0.3s ease;
+        }
+        
+        .message-item:last-child {
+            border-bottom: none;
+        }
+        
+        .message-item:hover {
+            background: rgba(0, 150, 136, 0.05);
+            border-radius: 12px;
+            padding: 20px 15px;
+        }
+        
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .message-subject {
+            font-weight: 600;
+            color: #333;
+            font-size: 16px;
+        }
+        
+        .message-date {
+            font-size: 14px;
+            color: #999;
+        }
+        
+        .message-sender {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        
+        .message-content {
+            color: #555;
+            line-height: 1.6;
+        }
+        
+        .message-unread {
+            background: rgba(255, 152, 0, 0.1);
+            border-left: 4px solid #FF9800;
+        }
+        
+        .alert {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+        
+        .alert-success {
+            background: rgba(76, 175, 80, 0.1);
+            color: #388e3c;
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+        
+        .alert-error {
+            background: rgba(244, 67, 54, 0.1);
+            color: #d32f2f;
+            border: 1px solid rgba(244, 67, 54, 0.3);
+        }
+
         /* ========== FOOTER ========== */
         footer {
             margin-top: 60px;
@@ -790,6 +976,9 @@ $quizzes = $quizzStmt->fetchAll(PDO::FETCH_ASSOC);
         /* ========== RESPONSIVE ========== */
         @media (max-width: 1200px) {
             .chart-container {
+                grid-template-columns: 1fr;
+            }
+            .messagerie-container {
                 grid-template-columns: 1fr;
             }
         }
@@ -889,6 +1078,10 @@ $quizzes = $quizzStmt->fetchAll(PDO::FETCH_ASSOC);
                 <a href="?section=quizzes" data-section="quizzes" class="<?= $defaultSection === 'quizzes' ? 'active' : '' ?>">
                     <i class="fa-solid fa-circle-question"></i> Quizzes
                 </a>
+               <a href="/lms_isep/public/messagerie.php" target="_top" onclick="window.location.href='/lms_isep/public/messagerie.php'; return false;">
+    <i class="fa-solid fa-envelope"></i> Messagerie
+</a>
+
             </div>
         </div>
         <div class="logout">
@@ -1318,8 +1511,154 @@ $quizzes = $quizzStmt->fetchAll(PDO::FETCH_ASSOC);
             </table>
         </div>
 
+        <!-- SECTION MESSAGERIE -->
+        <div id="messagerie" class="section" style="<?= $defaultSection === 'messagerie' ? '' : 'display:none;' ?>">
+            <h2 class="section-title">Messagerie Administrative</h2>
+            
+            <!-- Affichage des messages de succès/erreur -->
+            <?php if (isset($success_message)): ?>
+                <div class="alert alert-success">
+                    <i class="fa-solid fa-check-circle"></i> <?= htmlspecialchars($success_message) ?>
+                </div>
+            <?php endif; ?>
+            
+            <?php if (isset($error_message)): ?>
+                <div class="alert alert-error">
+                    <i class="fa-solid fa-exclamation-circle"></i> <?= htmlspecialchars($error_message) ?>
+                </div>
+            <?php endif; ?>
+
+            <div class="messagerie-container">
+                <!-- FORMULAIRE D'ENVOI DE MESSAGE -->
+                <div class="message-form">
+                    <h3 class="chart-title" style="margin-bottom: 25px;">
+                        <i class="fa-solid fa-paper-plane"></i> Envoyer un message
+                    </h3>
+                    
+                    <form method="POST" action="">
+                        <input type="hidden" name="action" value="send_message">
+                        
+                        <div class="form-group">
+                            <label for="destinataire_id">
+                                <i class="fa-solid fa-user"></i> Destinataire
+                            </label>
+                            <select name="destinataire_id" id="destinataire_id" required>
+                                <option value="">Sélectionner un destinataire</option>
+                                <?php foreach($destinataires as $destinataire): ?>
+                                    <option value="<?= $destinataire['id'] ?>">
+                                        <?= htmlspecialchars($destinataire['nom'] . ' ' . $destinataire['prenom']) ?>
+                                        <?php if($destinataire['role_id'] == 2): ?>
+                                            (Enseignant)
+                                        <?php elseif($destinataire['role_id'] == 3): ?>
+                                            (Étudiant)
+                                        <?php endif; ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="sujet">
+                                <i class="fa-solid fa-tag"></i> Sujet
+                            </label>
+                            <input type="text" name="sujet" id="sujet" placeholder="Objet du message" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="contenu">
+                                <i class="fa-solid fa-message"></i> Message
+                            </label>
+                            <textarea name="contenu" id="contenu" placeholder="Tapez votre message ici..." required></textarea>
+                        </div>
+                        
+                        <button type="submit" class="button add" style="width: 100%; justify-content: center;">
+                            <i class="fa-solid fa-paper-plane"></i> Envoyer le message
+                        </button>
+                    </form>
+                </div>
+
+                <!-- LISTE DES MESSAGES REÇUS -->
+                <div class="message-list">
+                    <h3 class="chart-title" style="margin-bottom: 25px;">
+                        <i class="fa-solid fa-inbox"></i> Messages reçus
+                    </h3>
+                    
+                    <?php if ($messages_recus->rowCount() > 0): ?>
+                        <?php while($message = $messages_recus->fetch(PDO::FETCH_ASSOC)): ?>
+                            <div class="message-item <?= !$message['lu'] ? 'message-unread' : '' ?>">
+                                <div class="message-header">
+                                    <div class="message-subject">
+                                        <?php if (!$message['lu']): ?>
+                                            <i class="fa-solid fa-circle" style="color: #FF9800; font-size: 8px; margin-right: 8px;"></i>
+                                        <?php endif; ?>
+                                        <?= htmlspecialchars($message['sujet']) ?>
+                                    </div>
+                                    <div class="message-date">
+                                        <?= date('d/m/Y H:i', strtotime($message['date_envoi'])) ?>
+                                    </div>
+                                </div>
+                                <div class="message-sender">
+                                    <i class="fa-solid fa-user"></i> 
+                                    De: <?= htmlspecialchars($message['expediteur_nom'] . ' ' . $message['expediteur_prenom']) ?>
+                                </div>
+                                <div class="message-content">
+                                    <?= nl2br(htmlspecialchars($message['contenu'])) ?>
+                                </div>
+                                <?php if (!$message['lu']): ?>
+                                    <div style="margin-top: 10px;">
+                                        <a href="?section=messagerie&mark_read=<?= $message['id'] ?>" class="button edit" style="font-size: 12px; padding: 6px 12px;">
+                                            <i class="fa-solid fa-check"></i> Marquer comme lu
+                                        </a>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <div class="no-results">
+                            <i class="fa-solid fa-inbox" style="font-size: 48px; color: #ccc; margin-bottom: 15px;"></i>
+                            <p>Aucun message reçu pour le moment.</p>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+
+            <!-- MESSAGES ENVOYÉS -->
+            <div class="message-list" style="margin-top: 30px;">
+                <h3 class="chart-title" style="margin-bottom: 25px;">
+                    <i class="fa-solid fa-paper-plane"></i> Messages envoyés
+                </h3>
+                
+                <?php if ($messages_envoyes->rowCount() > 0): ?>
+                    <?php while($message = $messages_envoyes->fetch(PDO::FETCH_ASSOC)): ?>
+                        <div class="message-item">
+                            <div class="message-header">
+                                <div class="message-subject">
+                                    <?= htmlspecialchars($message['sujet']) ?>
+                                </div>
+                                <div class="message-date">
+                                    <?= date('d/m/Y H:i', strtotime($message['date_envoi'])) ?>
+                                </div>
+                            </div>
+                            <div class="message-sender">
+                                <i class="fa-solid fa-user"></i> 
+                                À: <?= htmlspecialchars($message['destinataire_nom'] . ' ' . $message['destinataire_prenom']) ?>
+                            </div>
+                            <div class="message-content">
+                                <?= nl2br(htmlspecialchars($message['contenu'])) ?>
+                            </div>
+                        </div>
+                    <?php endwhile; ?>
+                <?php else: ?>
+                    <div class="no-results">
+                        <i class="fa-solid fa-paper-plane" style="font-size: 48px; color: #ccc; margin-bottom: 15px;"></i>
+                        <p>Aucun message envoyé pour le moment.</p>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+
         <footer>
-            <p>&copy; 2024 Admin Dashboard - Système de gestion éducative</p>
+            <p>&copy; 2025 Admin Dashboard - Système de gestion éducative</p>
         </footer>
     </div>
 

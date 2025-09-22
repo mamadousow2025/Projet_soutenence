@@ -109,7 +109,7 @@ include(__DIR__ . '/../includes/header.php');
       <div class="icon"><i class="fas fa-book"></i></div>
       <h3>Cours en ligne</h3>
       <p>Accédez à des cours organisés par filière, disponibles 24h/24 avec vidéos, PDF et exercices pratiques.</p>
-      <a href="#">En savoir plus</a>
+      <a href="login.php">En savoir plus</a>
     </div>
 
     <!-- Service 2 -->
@@ -117,7 +117,7 @@ include(__DIR__ . '/../includes/header.php');
       <div class="icon"><i class="fas fa-video"></i></div>
       <h3>Cours en visioconférence</h3>
       <p>Participez à des cours en direct avec vos enseignants via un système d’appel vidéo intégré.</p>
-      <a href="#">Participer</a>
+      <a href="login.php">Participer</a>
     </div>
 
     <!-- Service 3 -->
@@ -125,7 +125,7 @@ include(__DIR__ . '/../includes/header.php');
       <div class="icon"><i class="fas fa-pen-nib"></i></div>
       <h3>Quiz & Devoirs</h3>
       <p>Évaluez vos connaissances grâce à des quiz interactifs et soumettez vos devoirs directement en ligne.</p>
-      <a href="#">Découvrir</a>
+      <a href="login.php">Découvrir</a>
     </div>
 
     <!-- Service 4 -->
@@ -133,7 +133,7 @@ include(__DIR__ . '/../includes/header.php');
       <div class="icon"><i class="fas fa-chart-line"></i></div>
       <h3>Suivi de progression</h3>
       <p>Suivez vos progrès académiques avec un tableau de bord détaillé : notes, statistiques et avancement de vos cours.</p>
-      <a href="#">Voir mon suivi</a>
+      <a href="login.php">Voir mon suivi</a>
     </div>
 
     <!-- Service 5 -->
@@ -141,15 +141,16 @@ include(__DIR__ . '/../includes/header.php');
       <div class="icon"><i class="fas fa-comments"></i></div>
       <h3>Messagerie</h3>
       <p>Discutez avec vos enseignants et camarades via une messagerie sécurisée intégrée à la plateforme.</p>
-      <a href="#">Accéder</a>
+      <a href="login.php">Accéder</a>
     </div>
 
     <!-- Service 6 -->
     <div class="service">
       <div class="icon"><i class="fas fa-certificate"></i></div>
-      <h3>Certifications</h3>
-      <p>Obtenez des certificats numériques reconnus après avoir validé vos parcours d’apprentissage.</p>
-      <a href="#">Voir plus</a>
+      <h3>
+         Pratique intensive</h3>
+      <p>Apprenez par la pratique grâce à des projets concrets et modernes.</p>
+      <a href="login.php">Voir plus</a>
     </div>
 
     <!-- Service 7 -->
@@ -157,7 +158,7 @@ include(__DIR__ . '/../includes/header.php');
       <div class="icon"><i class="fas fa-bell"></i></div>
       <h3>Notifications & Alertes</h3>
       <p>Recevez des alertes en temps réel pour les cours, devoirs et messages importants afin de ne rien manquer.</p>
-      <a href="#">Configurer</a>
+      <a href="loggin.php">Configurer</a>
     </div>
 
     <!-- Service 8 -->
@@ -165,7 +166,7 @@ include(__DIR__ . '/../includes/header.php');
       <div class="icon"><i class="fas fa-chart-pie"></i></div>
       <h3>Statistiques & Rapports</h3>
       <p>Visualisez vos performances et accédez à des rapports détaillés pour mieux gérer votre apprentissage.</p>
-      <a href="#">Voir les stats</a>
+      <a href="login.php">Voir les stats</a>
     </div>
 
   </div>

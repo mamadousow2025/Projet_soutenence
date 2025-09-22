@@ -368,7 +368,7 @@ if ($progression && $progression['modules_total'] > 0) {
         <div class="flex-grow py-4">
             <ul class="space-y-2 px-3">
                 <li>
-                    <a href="dashboard.php" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-sidebarHover transition-all">
+                    <a href="etudiant_dashboard.php" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-sidebarHover transition-all">
                         <i class="fas fa-home w-5 h-5"></i> 
                         <span>Tableau de bord</span>
                     </a>

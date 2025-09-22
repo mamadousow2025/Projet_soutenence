@@ -220,9 +220,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <div class="navbar">
     <h1><i class="fa fa-user-cog"></i> Panneau Admin</h1>
     <div>
-        <a href="admin_dashboard.php"><i class="fa fa-home"></i> Accueil</a>
-        <a href="add_user.php"><i class="fa fa-user-plus"></i> Nouvel utilisateur</a>
-        <a href="../logout.php" style="color: white; background-color: red; padding: 5px 10px; border-radius: 5px; text-decoration: none;">
+        <a href="admin_dashboard.php"><i class="fa fa-home"></i>Tableau de Board</a>
+        <a href="add_users.php"><i class="fa fa-user-plus"></i> Nouvel utilisateur</a>
+        <a href="logout.php" style="color: white; background-color: red; padding: 5px 10px; border-radius: 5px; text-decoration: none;">
             <i class="fa fa-sign-out-alt"></i> Déconnexion
         </a>
     </div>

@@ -286,18 +286,130 @@ include(__DIR__ . '/../includes/header.php');
 <section class="founders">
   <h2>Nos apprenants & fondateurs</h2>
   <div class="founders-grid">
+
     <div class="founder">
-      <img src="assets/images/fondateur1.jpg" alt="Fondateur 1">
-      <h3>El Hadji M. Sow</h3>
-      <p>Responsable du projet et coordonnateur principal, passionné par l’enseignement et le développement pédagogique.</p>
+      <img src="../images/WhatsApp_Image_2025-07-16_a_00.19.02_5da5830e-removebg-preview.png" alt="El Hadji Mamadou Sow">
+      <h3>El Hadji Mamadou Sow</h3>
+      <p>Responsable du projet, Technicien en Développement Web & Mobile</p>
     </div>
+
     <div class="founder">
-      <img src="assets/images/fondateur2.jpg" alt="Fondateur 2">
-      <h3>Serigne B. Camara</h3>
-      <p>Expert en technologies éducatives et mentor des étudiants, garantissant l’interactivité et la qualité des contenus.</p>
+      <img src="assets/images/fondateur2.jpg" alt="Fallou Ndiaye">
+      <h3>Fallou Ndiaye</h3>
+      <p>Expert en technologies éducatives et mentor des étudiants</p>
     </div>
+
+    <div class="founder">
+      <img src="assets/images/fondateur3.jpg" alt="Hady Vilane">
+      <h3>Hady Vilane</h3>
+      <p>Spécialiste en Réseaux & Télécommunications</p>
+    </div>
+
+    <div class="founder">
+      <img src="assets/images/fondateur4.jpg" alt="Bacary Biaye">
+      <h3>Bacary Biaye</h3>
+      <p>Développeur Full Stack, garant de la performance</p>
+    </div>
+
+    <div class="founder">
+      <img src="assets/images/fondateur5.jpg" alt="Hawa Oumar Bassoum">
+      <h3>Hawa Oumar Bassoum</h3>
+      <p>Chargée de communication et coordinatrice des activités</p>
+    </div>
+
   </div>
 </section>
+
+<style>
+/* Section */
+.founders {
+  text-align: center;
+  padding: 60px 20px;
+  background: transparent; /* aucun arrière-plan */
+}
+
+/* Titre */
+.founders h2 {
+  font-size: 2.4rem;
+  margin-bottom: 50px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  color: #009688; /* Couleur personnalisée */
+  position: relative;
+  display: inline-block;
+  padding-bottom: 12px;
+}
+
+.founders h2::after {
+  content: "";
+  width: 70px;
+  height: 4px;
+  background: #ff9800; /* Ligne soulignement orange */
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 2px;
+}
+
+/* Grille */
+.founders-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 35px;
+  max-width: 1100px;
+  margin: auto;
+}
+
+/* Carte */
+.founder {
+  background: #fff;
+  padding: 30px 20px;
+  border-radius: 20px;
+  box-shadow: 0px 6px 18px rgba(0,0,0,0.08);
+  transition: all 0.35s ease;
+  cursor: pointer;
+}
+
+.founder:hover {
+  transform: translateY(-12px) scale(1.03);
+  box-shadow: 0px 15px 35px rgba(0,0,0,0.15);
+}
+
+/* Image */
+.founder img {
+  width: 140px;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-bottom: 20px;
+  border: 5px solid #009688;
+  transition: all 0.35s ease;
+}
+
+.founder:hover img {
+  transform: scale(1.08);
+  border-color: #ff9800;
+}
+
+/* Nom */
+.founder h3 {
+  font-size: 1.3rem;
+  margin: 10px 0;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  color: #009688;
+}
+
+/* Description */
+.founder p {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #555;
+  padding: 0 10px;
+}
+</style>
+
 
 <!-- TIMELINE / HISTOIRE -->
 <section class="timeline" style="max-width: 1200px; margin: 80px auto; padding: 0 20px; position: relative;">
@@ -406,8 +518,8 @@ showItems();
     </div>
     <div class="why-card">
       <i class="fas fa-certificate"></i>
-      <h3>Certifications</h3>
-      <p>Recevez des certificats numériques officiels pour valoriser vos compétences.</p>
+      <h3>Pratique intensive </h3>
+      <p>Apprenez par la pratique grâce à des projets concrets et modernes.</p>
     </div>
   </div>
 </section>

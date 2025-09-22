@@ -261,7 +261,7 @@ $modules_count = $stmt->fetchColumn() ?: 0;
             <a href="#" class="flex items-center gap-3 p-3 rounded hover:bg-accent transition">
                 <i data-feather="film"></i> Enregistrements
             </a>
-            <a href="#" class="flex items-center gap-3 p-3 rounded hover:bg-accent transition">
+            <a href="messagerie.php" class="flex items-center gap-3 p-3 rounded hover:bg-accent transition">
                 <i data-feather="send"></i> Messagerie
             </a>
         </nav>
