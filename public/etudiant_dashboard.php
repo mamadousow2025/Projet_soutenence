@@ -245,7 +245,7 @@ if ($filiere_id) {
         </a>
       </li>
       <li>
-        <a href="forum.php" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-sidebarHover transition-all">
+        <a href="projet.php" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-sidebarHover transition-all">
           <i class="fas fa-users w-5 h-5"></i> 
           <span>Forum</span>
         </a>

@@ -1,7 +1,6 @@
 <?php 
 session_start();
 
-
 // Connexion à la base
 require_once __DIR__ . '/../config/database.php';
 
@@ -101,7 +100,7 @@ $destinataires = $pdo->query("SELECT id, nom, prenom, role_id FROM users WHERE i
 // =================== STATISTIQUES GLOBALES ===================
 $totalUsers = $pdo->query("SELECT COUNT(*) FROM users")->fetchColumn();
 $totalCourses = $pdo->query("SELECT COUNT(*) FROM cours")->fetchColumn();
-$totalProjects = $pdo->query("SELECT COUNT(*) FROM projects")->fetchColumn();
+$totalProjets = $pdo->query("SELECT COUNT(*) FROM projets")->fetchColumn();
 $totalQuizzes = $pdo->query("SELECT COUNT(*) FROM quizzes")->fetchColumn();
 
 // Comptage par rôles
@@ -118,13 +117,13 @@ $monthlyUsers = $pdo->query("
     ORDER BY month
 ")->fetchAll(PDO::FETCH_ASSOC);
 
-// Activités récentes
+// Activités récentes - CORRIGÉ pour utiliser le bon nom de table
 $recentActivities = $pdo->query("
     (SELECT 'user' as type, CONCAT('Nouvel utilisateur: ', nom, ' ', prenom) as description, created_at as date FROM users ORDER BY created_at DESC LIMIT 5)
     UNION 
     (SELECT 'course' as type, CONCAT('Nouveau cours: ', titre) as description, created_at as date FROM cours ORDER BY created_at DESC LIMIT 5)
     UNION
-    (SELECT 'project' as type, CONCAT('Projet soumis: ', title) as description, submitted_at as date FROM projects ORDER BY submitted_at DESC LIMIT 5)
+    (SELECT 'projet' as type, CONCAT('Projet soumis: ', titre) as description, date_creation as date FROM projets ORDER BY date_creation DESC LIMIT 5)
     ORDER BY date DESC LIMIT 8
 ")->fetchAll(PDO::FETCH_ASSOC);
 
@@ -156,14 +155,14 @@ $pendingCoursesStmt = $pdo->query("
 ");
 $pendingCourses = $pendingCoursesStmt->fetchAll(PDO::FETCH_ASSOC);
 
-// =================== LISTE DES PROJETS ===================
-$projectsStmt = $pdo->query("
-    SELECT p.id, p.title, CONCAT(u.nom, ' ', u.prenom) AS student, p.status, p.submitted_at
-    FROM projects p
-    JOIN users u ON p.user_id = u.id
-    ORDER BY p.submitted_at DESC
+// =================== LISTE DES PROJETS - CORRIGÉ ===================
+$projetsStmt = $pdo->query("
+    SELECT p.id, p.titre, CONCAT(u.nom, ' ', u.prenom) AS enseignant, p.statut, p.date_creation
+    FROM projets p
+    JOIN users u ON p.enseignant_id = u.id
+    ORDER BY p.date_creation DESC
 ");
-$projects = $projectsStmt->fetchAll(PDO::FETCH_ASSOC);
+$projects = $projetsStmt->fetchAll(PDO::FETCH_ASSOC);
 
 // =================== LISTE DES QUIZZES ===================
 $quizzStmt = $pdo->query("
@@ -1181,7 +1180,7 @@ $quizzes = $quizzStmt->fetchAll(PDO::FETCH_ASSOC);
                 <div class="card">
                     <i class="fa-solid fa-briefcase"></i>
                     <h3>Projets</h3>
-                    <p><?= $totalProjects ?></p>
+                    <p><?= $totalProjets ?></p>
                     <span class="trend up">+22%</span>
                 </div>
                 <div class="card">
@@ -1426,7 +1425,7 @@ $quizzes = $quizzStmt->fetchAll(PDO::FETCH_ASSOC);
                     <tr>
                         <th>ID</th>
                         <th>Titre</th>
-                        <th>Étudiant</th>
+                        <th>Enseignant</th>
                         <th>Status</th>
                         <th>Soumis le</th>
                         <th>Actions</th>
@@ -1436,14 +1435,14 @@ $quizzes = $quizzStmt->fetchAll(PDO::FETCH_ASSOC);
                     <?php foreach($projects as $project): ?>
                         <tr>
                             <td><?= $project['id'] ?></td>
-                            <td><?= htmlspecialchars($project['title']) ?></td>
-                            <td><?= htmlspecialchars($project['student']) ?></td>
+                            <td><?= htmlspecialchars($project['titre']) ?></td>
+                            <td><?= htmlspecialchars($project['enseignant']) ?></td>
                             <td>
-                                <span class="status <?= strtolower($project['status']) ?>">
-                                    <?= ucfirst($project['status']) ?>
+                                <span class="status <?= strtolower($project['statut']) ?>">
+                                    <?= ucfirst($project['statut']) ?>
                                 </span>
                             </td>
-                            <td><?= $project['submitted_at'] ?></td>
+                            <td><?= $project['date_creation'] ?></td>
                             <td>
                                 <a href="view_project.php?id=<?= $project['id'] ?>" class="button edit">
                                     <i class="fa fa-eye"></i>
@@ -1658,7 +1657,7 @@ $quizzes = $quizzStmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
 
         <footer>
-            <p>&copy; 2025 Admin Dashboard - Système de gestion éducative</p>
+            <p>© 2025 Admin Dashboard - Système de gestion éducative</p>
         </footer>
     </div>
 
@@ -1853,7 +1852,7 @@ $quizzes = $quizzStmt->fetchAll(PDO::FETCH_ASSOC);
                     labels: ['Cours', 'Projets', 'Quizzes'],
                     datasets: [{
                         label: 'Nombre total',
-                        data: [<?= $totalCourses ?>, <?= $totalProjects ?>, <?= $totalQuizzes ?>],
+                        data: [<?= $totalCourses ?>, <?= $totalProjets ?>, <?= $totalQuizzes ?>],
                         backgroundColor: [
                             gradientPrimary,
                             'rgba(156, 39, 176, 0.8)',

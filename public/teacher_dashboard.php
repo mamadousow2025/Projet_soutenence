@@ -239,7 +239,7 @@ $modules_count = $stmt->fetchColumn() ?: 0;
             <a href="#" class="flex items-center gap-3 p-3 rounded hover:bg-accent transition">
                 <i data-feather="clipboard"></i> Devoirs
             </a>
-            <a href="#" class="flex items-center gap-3 p-3 rounded hover:bg-accent transition">
+            <a href="feedback.php" class="flex items-center gap-3 p-3 rounded hover:bg-accent transition">
                 <i data-feather="edit-3"></i> Correction & Feedback
             </a>
             <a href="#" class="flex items-center gap-3 p-3 rounded hover:bg-accent transition">
@@ -258,7 +258,7 @@ $modules_count = $stmt->fetchColumn() ?: 0;
             <a href="#" class="flex items-center gap-3 p-3 rounded hover:bg-accent transition">
                 <i data-feather="activity"></i> Chat & Sondages
             </a>
-            <a href="#" class="flex items-center gap-3 p-3 rounded hover:bg-accent transition">
+            <a href="projet.php" class="flex items-center gap-3 p-3 rounded hover:bg-accent transition">
                 <i data-feather="film"></i> Enregistrements
             </a>
             <a href="messagerie.php" class="flex items-center gap-3 p-3 rounded hover:bg-accent transition">
