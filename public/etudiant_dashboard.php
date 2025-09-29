@@ -245,10 +245,10 @@ if ($filiere_id) {
         </a>
       </li>
       <li>
-        <a href="projet.php" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-sidebarHover transition-all">
-          <i class="fas fa-users w-5 h-5"></i> 
-          <span>Forum</span>
-        </a>
+             <a href="projet.php" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-sidebarHover transition-all">
+  <i class="fas fa-project-diagram w-5 h-5"></i>
+  <span>Projets</span>
+</a>
       </li>
     </ul>
   </div>
@@ -303,9 +303,9 @@ if ($filiere_id) {
       <div class="w-14 h-14 rounded-full bg-primary-100 flex items-center justify-center mb-4">
         <i class="fas fa-comments text-primary-600 text-xl"></i>
       </div>
-      <h4 class="text-xl font-semibold mb-2 text-gray-800">Forum</h4>
+      <h4 class="text-xl font-semibold mb-2 text-gray-800">Messagerie</h4>
       <p class="text-gray-600 mb-4">Discutez avec vos camarades et enseignants.</p>
-      <a href="forum.php" class="mt-auto inline-block border border-primary-500 text-primary-500 px-4 py-2 rounded-lg hover:bg-primary-500 hover:text-white transition-all">Accéder</a>
+      <a href="messagerie.php" class="mt-auto inline-block border border-primary-500 text-primary-500 px-4 py-2 rounded-lg hover:bg-primary-500 hover:text-white transition-all">Accéder</a>
     </div>
   </section>
 

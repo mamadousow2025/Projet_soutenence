@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 24, 2025 at 06:40 AM
+-- Generation Time: Sep 30, 2025 at 01:25 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -79,7 +79,6 @@ CREATE TABLE `cours` (
 --
 
 INSERT INTO `cours` (`id`, `enseignant_id`, `titre`, `description`, `filiere_id`, `image_couverture`, `video_cours`, `pdf_cours`, `date_creation`, `actif`, `created_at`, `status`, `title`, `nom`, `annee`) VALUES
-(8, 7, 'Programmation', 'xn xwan xa n zn szn a jscczj bjcs j sjz ns n', 2, 'uploads/img_689682c9ef0e3.jpg', 'uploads/vid_68967d86bf85d.mp4', 'uploads/pdf_68967d86bfc34.pdf', '2025-08-09 00:43:18', 1, '2025-08-09 00:43:18', 'active', '', '', 1),
 (9, 7, '2 h s', 'xn xwan', 3, 'uploads/img_68967de1da3cb.jpg', NULL, 'uploads/pdf_68967de1db1a0.pdf', '2025-08-09 00:44:49', 1, '2025-08-09 00:44:49', 'active', '', '', 1),
 (11, 7, '2 h s', 'xn xwan', 3, NULL, NULL, 'uploads/pdf_68967eb35994b.pdf', '2025-08-09 00:48:19', 1, '2025-08-09 00:48:19', 'active', '', '', 1),
 (12, 7, '2 h s', 'xn xwan', 3, NULL, NULL, 'uploads/pdf_68968084199fb.pdf', '2025-08-09 00:56:04', 1, '2025-08-09 00:56:04', 'active', '', '', 1),
@@ -98,16 +97,15 @@ INSERT INTO `cours` (`id`, `enseignant_id`, `titre`, `description`, `filiere_id`
 (30, 32, 'Programmation', 'qwjaslkwnqasl fqehasbkqwnd.wqvJBASWQM SD', 5, 'uploads/img_68b37f18ae4f2.png', NULL, 'uploads/pdf_68b37f18b0af4.pdf', '2025-08-31 00:45:44', 1, '2025-08-31 00:45:44', 'active', '', '', 1),
 (31, 32, 'Econnomie', '', 5, NULL, NULL, 'uploads/pdf_68b37f330865f.pdf', '2025-08-31 00:46:11', 1, '2025-08-31 00:46:11', 'active', '', '', 1),
 (32, 38, 'Programmation', 'wsk,mqeasm jwjm', 1, 'uploads/img_68b38f7c3bb23.jpg', NULL, 'uploads/pdf_68b38f7c3c29f.pdf', '2025-08-31 01:55:40', 1, '2025-08-31 01:55:40', 'active', '', '', 1),
-(33, 28, 'BBade de Django', 'ksldfmlejbfkawelmm', 1, 'uploads/img_68b41dd8a624b.jpg', NULL, 'uploads/pdf_68b41dd8a727c.pdf', '2025-08-31 12:03:04', 1, '2025-08-31 12:03:04', 'active', '', '', 1),
-(34, 28, 'Programmation', 'hvihkb,m', 1, 'uploads/img_68b42057c2756.jpg', NULL, NULL, '2025-08-31 12:13:43', 1, '2025-08-31 12:13:43', 'active', '', '', 1),
-(35, 28, 'Programmation', 'hvihkb,m', 1, 'uploads/img_68b42145641da.jpg', NULL, NULL, '2025-08-31 12:17:41', 1, '2025-08-31 12:17:41', 'active', '', '', 1),
 (38, 28, 'Formation Bureautique', '', 1, 'uploads/img_68b4252d1a04d.jpg', NULL, NULL, '2025-08-31 12:34:21', 1, '2025-08-31 12:34:21', 'active', '', '', 1),
-(39, 28, 'laravel', 'uuhuhknkih', 1, NULL, NULL, NULL, '2025-08-31 14:58:49', 1, '2025-08-31 14:58:49', 'active', '', '', 1),
 (40, 28, 'Historique', '', 1, NULL, NULL, NULL, '2025-08-31 17:58:07', 1, '2025-08-31 17:58:07', 'active', '', '', 1),
 (41, 48, 'Reseau', 'e j rkd j rfm r,', 2, NULL, NULL, NULL, '2025-09-17 21:44:38', 1, '2025-09-17 21:44:38', 'active', '', '', 1),
 (42, 55, 'Agriculture', 'c est quoi argriculture', 25, NULL, NULL, NULL, '2025-09-18 00:05:47', 1, '2025-09-18 00:05:47', 'active', '', '', 1),
 (43, 28, 'python', 'c est python', 1, NULL, NULL, NULL, '2025-09-18 01:44:49', 1, '2025-09-18 01:44:49', 'active', '', '', 0),
-(44, 59, 'metier du rails', 'ndkncd', 24, NULL, NULL, NULL, '2025-09-18 01:51:34', 1, '2025-09-18 01:51:34', 'active', '', '', 0);
+(44, 59, 'metier du rails', 'ndkncd', 24, NULL, NULL, NULL, '2025-09-18 01:51:34', 1, '2025-09-18 01:51:34', 'active', '', '', 0),
+(49, 28, 'Interface home machine', 'c est un cours qui est tellement pratique', 1, NULL, NULL, NULL, '2025-09-26 12:44:16', 1, '2025-09-26 12:44:16', 'active', '', '', 0),
+(50, 28, 'Maintenance machine', 'c est telelement coool', 1, NULL, NULL, NULL, '2025-09-26 12:44:39', 1, '2025-09-26 12:44:39', 'active', '', '', 0),
+(54, 28, 'Cours de Java', 'module de 2oh', 1, NULL, NULL, NULL, '2025-09-30 01:18:41', 1, '2025-09-30 01:18:41', 'active', '', '', 0);
 
 -- --------------------------------------------------------
 
@@ -224,6 +222,20 @@ CREATE TABLE `etudiant` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `etudiant_id` int(11) DEFAULT NULL,
   `filiere_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `exercices`
+--
+
+CREATE TABLE `exercices` (
+  `id` int(11) NOT NULL,
+  `cours_id` int(11) NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
+  `date_creation` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -458,17 +470,10 @@ INSERT INTO `messages` (`id`, `expediteur_id`, `destinataire_id`, `sujet`, `cont
 (73, 28, 44, 'cours PHP', 'demain il on va faire un evaluatuion sur les bases de php', 1, '2025-09-22 04:33:04', 0, 0, 0),
 (74, 28, 57, 'cours PHP', 'demain il on va faire un evaluatuion sur les bases de php', 1, '2025-09-22 04:33:04', 0, 0, 0),
 (75, 42, 55, 'm m w', '  g g h  ', 0, '2025-09-22 04:34:35', 0, 0, 0),
-(80, 30, 11, 'd&#039;absences non justifiées en DWM', 'Toutes les absences non justifiées seront recensées par Monsieur Djibril SAMBOU.\r\nTous ces apprenants qui ne justifieront pas leurs absences, seront immédiatement traduits en CONSEIL DE DISCIPLINE.\r\nJe répète tout apprenant qui ne veut plus étudier, n&#039;a qu&#039;à nous le signaler. Et la Direction de L&#039;ISEP THIES va vous enlever de la liste de la classe et surtout couper directement votre BOURSE.\r\nMerci pour votre compréhension.\r\nCordialement.\r\nMn', 1, '2025-09-23 04:17:03', 0, 0, 0),
-(81, 30, 19, 'd&#039;absences non justifiées en DWM', 'Toutes les absences non justifiées seront recensées par Monsieur Djibril SAMBOU.\r\nTous ces apprenants qui ne justifieront pas leurs absences, seront immédiatement traduits en CONSEIL DE DISCIPLINE.\r\nJe répète tout apprenant qui ne veut plus étudier, n&#039;a qu&#039;à nous le signaler. Et la Direction de L&#039;ISEP THIES va vous enlever de la liste de la classe et surtout couper directement votre BOURSE.\r\nMerci pour votre compréhension.\r\nCordialement.\r\nMn', 1, '2025-09-23 04:17:03', 0, 0, 0),
-(82, 30, 33, 'd&#039;absences non justifiées en DWM', 'Toutes les absences non justifiées seront recensées par Monsieur Djibril SAMBOU.\r\nTous ces apprenants qui ne justifieront pas leurs absences, seront immédiatement traduits en CONSEIL DE DISCIPLINE.\r\nJe répète tout apprenant qui ne veut plus étudier, n&#039;a qu&#039;à nous le signaler. Et la Direction de L&#039;ISEP THIES va vous enlever de la liste de la classe et surtout couper directement votre BOURSE.\r\nMerci pour votre compréhension.\r\nCordialement.\r\nMn', 1, '2025-09-23 04:17:03', 0, 0, 0),
-(83, 30, 36, 'd&#039;absences non justifiées en DWM', 'Toutes les absences non justifiées seront recensées par Monsieur Djibril SAMBOU.\r\nTous ces apprenants qui ne justifieront pas leurs absences, seront immédiatement traduits en CONSEIL DE DISCIPLINE.\r\nJe répète tout apprenant qui ne veut plus étudier, n&#039;a qu&#039;à nous le signaler. Et la Direction de L&#039;ISEP THIES va vous enlever de la liste de la classe et surtout couper directement votre BOURSE.\r\nMerci pour votre compréhension.\r\nCordialement.\r\nMn', 1, '2025-09-23 04:17:03', 0, 0, 0),
-(84, 30, 37, 'd&#039;absences non justifiées en DWM', 'Toutes les absences non justifiées seront recensées par Monsieur Djibril SAMBOU.\r\nTous ces apprenants qui ne justifieront pas leurs absences, seront immédiatement traduits en CONSEIL DE DISCIPLINE.\r\nJe répète tout apprenant qui ne veut plus étudier, n&#039;a qu&#039;à nous le signaler. Et la Direction de L&#039;ISEP THIES va vous enlever de la liste de la classe et surtout couper directement votre BOURSE.\r\nMerci pour votre compréhension.\r\nCordialement.\r\nMn', 1, '2025-09-23 04:17:03', 0, 0, 0),
-(86, 30, 41, 'd&#039;absences non justifiées en DWM', 'Toutes les absences non justifiées seront recensées par Monsieur Djibril SAMBOU.\r\nTous ces apprenants qui ne justifieront pas leurs absences, seront immédiatement traduits en CONSEIL DE DISCIPLINE.\r\nJe répète tout apprenant qui ne veut plus étudier, n&#039;a qu&#039;à nous le signaler. Et la Direction de L&#039;ISEP THIES va vous enlever de la liste de la classe et surtout couper directement votre BOURSE.\r\nMerci pour votre compréhension.\r\nCordialement.\r\nMn', 1, '2025-09-23 04:17:03', 0, 0, 0),
-(87, 30, 42, 'd&#039;absences non justifiées en DWM', 'Toutes les absences non justifiées seront recensées par Monsieur Djibril SAMBOU.\r\nTous ces apprenants qui ne justifieront pas leurs absences, seront immédiatement traduits en CONSEIL DE DISCIPLINE.\r\nJe répète tout apprenant qui ne veut plus étudier, n&#039;a qu&#039;à nous le signaler. Et la Direction de L&#039;ISEP THIES va vous enlever de la liste de la classe et surtout couper directement votre BOURSE.\r\nMerci pour votre compréhension.\r\nCordialement.\r\nMn', 1, '2025-09-23 04:17:03', 0, 0, 0),
 (88, 30, 43, 'd&#039;absences non justifiées en DWM', 'Toutes les absences non justifiées seront recensées par Monsieur Djibril SAMBOU.\r\nTous ces apprenants qui ne justifieront pas leurs absences, seront immédiatement traduits en CONSEIL DE DISCIPLINE.\r\nJe répète tout apprenant qui ne veut plus étudier, n&#039;a qu&#039;à nous le signaler. Et la Direction de L&#039;ISEP THIES va vous enlever de la liste de la classe et surtout couper directement votre BOURSE.\r\nMerci pour votre compréhension.\r\nCordialement.\r\nMn', 1, '2025-09-23 04:17:03', 0, 0, 0),
-(89, 30, 44, 'd&#039;absences non justifiées en DWM', 'Toutes les absences non justifiées seront recensées par Monsieur Djibril SAMBOU.\r\nTous ces apprenants qui ne justifieront pas leurs absences, seront immédiatement traduits en CONSEIL DE DISCIPLINE.\r\nJe répète tout apprenant qui ne veut plus étudier, n&#039;a qu&#039;à nous le signaler. Et la Direction de L&#039;ISEP THIES va vous enlever de la liste de la classe et surtout couper directement votre BOURSE.\r\nMerci pour votre compréhension.\r\nCordialement.\r\nMn', 1, '2025-09-23 04:17:03', 0, 0, 0),
 (91, 61, 20, 'cours de laravel ', 'Bonjour', 0, '2025-09-23 04:51:39', 0, 0, 0),
-(92, 61, 20, 'cours de laravel ', 'Bonjour', 0, '2025-09-23 04:52:11', 0, 0, 0);
+(92, 61, 20, 'cours de laravel ', 'Bonjour', 0, '2025-09-23 04:52:11', 0, 0, 0),
+(93, 42, 30, 'n nn n ', ' jb j', 0, '2025-09-30 01:23:20', 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -542,15 +547,13 @@ CREATE TABLE `modules` (
 --
 
 INSERT INTO `modules` (`id`, `cours_id`, `titre`, `type`, `description`, `contenu`, `ordre`, `created_at`, `updated_at`, `created_by`) VALUES
-(1, 33, 'html css', 'normal', NULL, NULL, 2, '2025-08-31 10:57:24', '2025-08-31 10:57:24', 0),
 (2, 38, 'laravel', 'normal', NULL, NULL, 0, '2025-08-31 11:15:12', '2025-08-31 11:15:12', 0),
-(3, 34, 'css', 'normal', NULL, NULL, 0, '2025-08-31 12:10:29', '2025-08-31 12:10:29', 0),
-(4, 39, 'PPO', 'normal', NULL, NULL, 1, '2025-08-31 12:59:38', '2025-08-31 12:59:38', 0),
 (5, 40, 'Historique', 'normal', NULL, NULL, 1, '2025-08-31 15:58:34', '2025-08-31 15:58:34', 0),
 (6, 41, 'cablage', 'normal', NULL, NULL, 2, '2025-09-17 19:45:16', '2025-09-17 19:45:16', 0),
 (7, 42, 'procedure de la culture', 'normal', NULL, NULL, 1, '2025-09-17 22:09:26', '2025-09-17 22:09:26', 0),
-(8, 43, 'teste unitaire', 'normal', NULL, NULL, 0, '2025-09-17 23:45:15', '2025-09-17 23:45:15', 0),
-(9, 44, 'rails', 'normal', NULL, NULL, 0, '2025-09-17 23:51:55', '2025-09-17 23:51:55', 0);
+(9, 44, 'rails', 'normal', NULL, NULL, 0, '2025-09-17 23:51:55', '2025-09-17 23:51:55', 0),
+(11, 50, 'securite', 'normal', NULL, NULL, 1, '2025-09-26 10:46:21', '2025-09-26 10:46:21', 0),
+(12, 54, 'les base de java', 'normal', NULL, NULL, 0, '2025-09-29 23:19:17', '2025-09-29 23:19:17', 0);
 
 -- --------------------------------------------------------
 
@@ -570,17 +573,13 @@ CREATE TABLE `modules_completed` (
 --
 
 INSERT INTO `modules_completed` (`id`, `student_id`, `module_id`, `completed_at`) VALUES
-(1, 37, 1, '2025-08-31 11:11:22'),
 (2, 37, 2, '2025-08-31 11:16:42'),
-(3, 37, 3, '2025-08-31 12:12:13'),
-(4, 37, 4, '2025-08-31 13:01:30'),
 (5, 37, 5, '2025-08-31 16:43:38'),
 (6, 41, 5, '2025-09-03 18:56:53'),
-(7, 41, 4, '2025-09-03 19:01:37'),
 (8, 42, 5, '2025-09-06 00:10:53'),
-(9, 42, 4, '2025-09-06 01:00:51'),
 (10, 43, 5, '2025-09-10 13:00:34'),
-(11, 54, 7, '2025-09-17 22:13:33');
+(11, 54, 7, '2025-09-17 22:13:33'),
+(14, 42, 12, '2025-09-29 23:22:57');
 
 -- --------------------------------------------------------
 
@@ -622,7 +621,9 @@ INSERT INTO `module_contenus` (`id`, `module_id`, `type`, `titre`, `description`
 (15, 6, 'fichier', 'le fichier de cablage', NULL, '1758138356_1756641668_CARTE VISITE.pdf', '2025-09-17 19:45:56', '2025-09-17 19:45:56', 1),
 (16, 7, 'lien', 'cultuver', NULL, 'youtube:AlCAovzYRMo', '2025-09-17 22:09:57', '2025-09-17 22:09:57', 5),
 (17, 8, 'lien', 'python', NULL, 'youtube:oUJolR5bX6g', '2025-09-17 23:46:16', '2025-09-17 23:46:16', 0),
-(18, 9, 'fichier', 'rails', NULL, '1758153146_1756641668_CARTE VISITE.pdf', '2025-09-17 23:52:26', '2025-09-17 23:52:26', 0);
+(18, 9, 'fichier', 'rails', NULL, '1758153146_1756641668_CARTE VISITE.pdf', '2025-09-17 23:52:26', '2025-09-17 23:52:26', 0),
+(19, 10, 'fichier', 'expication laravel', NULL, '1758843942_fiche-candidature.pdf', '2025-09-25 23:45:42', '2025-09-25 23:45:42', 0),
+(20, 12, 'lien', 'une video a suivre pour les base de java', NULL, 'youtube:VqKZ0tRwUIc', '2025-09-29 23:20:26', '2025-09-29 23:20:26', 0);
 
 -- --------------------------------------------------------
 
@@ -694,7 +695,8 @@ INSERT INTO `notifications` (`id`, `user_id`, `titre`, `contenu`, `type`, `refer
 (45, 44, 'Nouveau message de Elhadji sow', 'd&#039;absences non justifiées en DWM', 'message', NULL, 0, '2025-09-23 04:17:03', NULL),
 (46, 57, 'Nouveau message de Elhadji sow', 'd&#039;absences non justifiées en DWM', 'message', NULL, 0, '2025-09-23 04:17:03', NULL),
 (47, 20, 'Nouveau message de Niang Fadal', 'cours de laravel ', 'message', NULL, 0, '2025-09-23 04:51:39', NULL),
-(48, 20, 'Nouveau message de Niang Fadal', 'cours de laravel ', 'message', NULL, 0, '2025-09-23 04:52:11', NULL);
+(48, 20, 'Nouveau message de Niang Fadal', 'cours de laravel ', 'message', NULL, 0, '2025-09-23 04:52:11', NULL),
+(49, 30, 'Nouveau message de Ablaye konate', 'n nn n ', 'message', NULL, 0, '2025-09-30 01:23:20', NULL);
 
 -- --------------------------------------------------------
 
@@ -716,17 +718,14 @@ CREATE TABLE `progression` (
 --
 
 INSERT INTO `progression` (`id`, `student_id`, `course_id`, `modules_total`, `modules_faits`, `updated_at`) VALUES
-(1, 37, 33, 1, 1, '2025-08-31 11:11:22'),
 (2, 37, 38, 1, 1, '2025-08-31 11:16:42'),
-(3, 37, 34, 1, 1, '2025-08-31 12:12:13'),
-(4, 37, 39, 1, 1, '2025-08-31 13:01:30'),
 (5, 37, 40, 1, 1, '2025-08-31 16:43:38'),
 (6, 41, 40, 1, 1, '2025-09-03 18:56:53'),
-(7, 41, 39, 1, 1, '2025-09-03 19:01:37'),
 (8, 42, 40, 1, 1, '2025-09-06 00:10:53'),
-(9, 42, 39, 1, 1, '2025-09-06 01:00:51'),
 (10, 43, 40, 1, 1, '2025-09-10 13:00:34'),
-(11, 54, 42, 1, 1, '2025-09-17 22:13:33');
+(11, 54, 42, 1, 1, '2025-09-17 22:13:33'),
+(12, 42, 43, 1, 1, '2025-09-24 10:56:21'),
+(14, 42, 54, 1, 1, '2025-09-29 23:22:57');
 
 -- --------------------------------------------------------
 
@@ -763,22 +762,27 @@ CREATE TABLE `projets` (
   `criteres_evaluation` text DEFAULT NULL,
   `ressources_necessaires` text DEFAULT NULL,
   `competences_developpees` text DEFAULT NULL,
-  `date_modification` datetime DEFAULT NULL
+  `date_modification` datetime DEFAULT NULL,
+  `statut_validation` enum('En Attente','Validé','Refusé') DEFAULT 'En Attente',
+  `note_globale` decimal(5,2) DEFAULT NULL,
+  `date_validation` datetime DEFAULT NULL,
+  `commentaire_validation` text DEFAULT NULL,
+  `validateur_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `projets`
 --
 
-INSERT INTO `projets` (`id`, `titre`, `description`, `type_projet`, `enseignant_id`, `date_creation`, `date_limite`, `statut`, `filiere_id`, `objectifs`, `criteres_evaluation`, `ressources_necessaires`, `competences_developpees`, `date_modification`) VALUES
-(5, 'BBade de Django', 'n an s', 'cahier_charge', 28, '2025-09-24 04:06:20', '2025-09-26', 'actif', 30, ' ms x', 'ms m cs', 'ms m sc', ' m s', NULL),
-(6, 'laravel', 'hvhxbqjbjq', 'cahier_charge', 42, '2025-09-24 04:18:44', '2025-09-24', 'actif', 1, 'a m mqa m a', ' mx m w, , z', ' xzma m wdm', ' xa  xam ', NULL),
-(7, 'laravel', 'hvhxbqjbjq', 'cahier_charge', 42, '2025-09-24 04:19:21', '2025-09-24', 'actif', 1, 'a m mqa m a', ' mx m w, , z', ' xzma m wdm', ' xa  xam ', NULL),
-(8, 'laravel', 'n xm MD ', 'cahier_charge', 28, '2025-09-24 04:21:15', '2025-09-30', 'actif', 1, 'M M WM ', 'XZM S CS', 'C SM M SCW', 'M CM C', NULL),
-(9, 'laravel', 'hvhxbqjbjq', 'cahier_charge', 28, '2025-09-24 04:21:25', '2025-09-24', 'actif', 1, 'a m mqa m a', ' mx m w, , z', ' xzma m wdm', ' xa  xam ', NULL),
-(10, 'laravel', 'n xm MD ', 'cahier_charge', 42, '2025-09-24 05:17:29', '2025-09-30', 'actif', 1, 'M M WM ', 'XZM S CS', 'C SM M SCW', 'M CM C', NULL),
-(11, 'python', 'voici le projet concernant python', 'sujet_pratique', 28, '2025-09-24 05:20:43', '2025-09-24', 'actif', 1, ' a wdm d', ' sam maw ', 'max m xa ', 'mxa m ax', '2025-09-24 05:22:52'),
-(12, 'laravel', 'n xm MD ', 'cahier_charge', 28, '2025-09-24 05:23:46', '2025-09-30', 'actif', 1, 'M M WM ', 'XZM S CS', 'C SM M SCW', 'M CM C', NULL);
+INSERT INTO `projets` (`id`, `titre`, `description`, `type_projet`, `enseignant_id`, `date_creation`, `date_limite`, `statut`, `filiere_id`, `objectifs`, `criteres_evaluation`, `ressources_necessaires`, `competences_developpees`, `date_modification`, `statut_validation`, `note_globale`, `date_validation`, `commentaire_validation`, `validateur_id`) VALUES
+(5, 'BBade de Django', 'n an s', 'cahier_charge', 28, '2025-09-24 04:06:20', '2025-09-26', 'actif', 30, ' ms x', 'ms m cs', 'ms m sc', ' m s', NULL, 'En Attente', NULL, NULL, NULL, NULL),
+(6, 'laravel', 'hvhxbqjbjq', 'cahier_charge', 42, '2025-09-24 04:18:44', '2025-09-24', 'actif', 1, 'a m mqa m a', ' mx m w, , z', ' xzma m wdm', ' xa  xam ', NULL, 'En Attente', NULL, NULL, NULL, NULL),
+(7, 'laravel', 'hvhxbqjbjq', 'cahier_charge', 42, '2025-09-24 04:19:21', '2025-09-24', 'actif', 1, 'a m mqa m a', ' mx m w, , z', ' xzma m wdm', ' xa  xam ', NULL, 'En Attente', NULL, NULL, NULL, NULL),
+(8, 'laravel', 'n xm MD ', 'cahier_charge', 28, '2025-09-24 04:21:15', '2025-09-30', 'actif', 1, 'M M WM ', 'XZM S CS', 'C SM M SCW', 'M CM C', NULL, 'En Attente', NULL, NULL, NULL, NULL),
+(9, 'laravel', 'hvhxbqjbjq', 'cahier_charge', 28, '2025-09-24 04:21:25', '2025-09-24', 'actif', 1, 'a m mqa m a', ' mx m w, , z', ' xzma m wdm', ' xa  xam ', NULL, 'En Attente', NULL, NULL, NULL, NULL),
+(10, 'laravel', 'n xm MD ', 'cahier_charge', 42, '2025-09-24 05:17:29', '2025-09-30', 'actif', 1, 'M M WM ', 'XZM S CS', 'C SM M SCW', 'M CM C', NULL, 'En Attente', NULL, NULL, NULL, NULL),
+(11, 'python', 'voici le projet concernant python', 'sujet_pratique', 28, '2025-09-24 05:20:43', '2025-09-24', 'actif', 1, ' a wdm d', ' sam maw ', 'max m xa ', 'mxa m ax', '2025-09-24 05:22:52', 'En Attente', NULL, NULL, NULL, NULL),
+(12, 'laravel', 'n xm MD ', 'cahier_charge', 28, '2025-09-24 05:23:46', '2025-09-30', 'actif', 1, 'M M WM ', 'XZM S CS', 'C SM M SCW', 'M CM C', NULL, '', 0.00, '2025-09-30 00:55:01', '', 30);
 
 -- --------------------------------------------------------
 
@@ -955,11 +959,11 @@ INSERT INTO `quizz` (`id`, `enseignant_id`, `module_id`, `course_id`, `titre`, `
 (26, 28, NULL, 33, 'Econnomie', 'n n', '2025-09-06 15:22:37', '2025-09-09 15:22:00', 20, 1, '2025-09-06 15:22:37', 'association', 30, NULL, 'actif'),
 (27, 28, NULL, 33, 'Elhafji', 'wjame fm wefm m wefd', '2025-09-10 23:29:56', '2025-09-10 23:29:00', 20, 1, '2025-09-10 23:29:56', 'qcm', 30, NULL, 'actif'),
 (28, 28, NULL, 35, 'Fallou', 'fallou', '2025-09-10 23:34:11', '2025-10-10 23:33:00', 20, 1, '2025-09-10 23:34:11', 'qcm', 30, NULL, 'actif'),
-(29, 28, NULL, 33, 'BBade de Django', 'n n n', '2025-09-12 20:38:19', '2025-09-15 20:38:00', 20, 1, '2025-09-12 20:38:19', 'qcm', 30, NULL, 'actif'),
+(29, 28, NULL, 33, 'BBade de Django', 'n n ndfn', '2025-09-12 20:38:19', '2025-09-26 20:38:00', 20, 1, '2025-09-12 20:38:19', 'qcm', 30, NULL, 'actif'),
 (30, 55, NULL, 42, 'cuture senegalaise', 'comment cultuver', '2025-09-18 00:32:13', '2025-09-18 00:31:00', 20, 1, '2025-09-18 00:32:13', 'qcm', 15, NULL, 'actif'),
 (31, 55, NULL, 42, 'cuture senegalaise', 'jnk nkj', '2025-09-18 00:37:58', '2025-09-18 02:37:00', 20, 1, '2025-09-18 00:37:58', 'qcm', 30, NULL, 'actif'),
 (32, 55, NULL, 42, 'cultuver', 'dwn wdjjdw', '2025-09-18 00:40:31', '2025-09-18 00:40:00', 20, 1, '2025-09-18 00:40:31', 'qcm', 30, NULL, 'actif'),
-(33, 55, NULL, 42, 'developpement', 'ggcg', '2025-09-18 00:43:31', '2025-09-27 00:43:00', 20, 1, '2025-09-18 00:43:31', 'texte_libre', 30, NULL, 'actif');
+(33, 55, NULL, 42, 'developpement', 'ggcg bn n', '2025-09-18 00:43:31', '2025-09-27 00:43:00', 20, 1, '2025-09-18 00:43:31', 'texte_libre', 30, NULL, 'actif');
 
 -- --------------------------------------------------------
 
@@ -1246,7 +1250,8 @@ INSERT INTO `users` (`id`, `nom`, `prenom`, `email`, `password`, `role_id`, `fil
 (58, 'ba', 'Fanta', 'gg@gmail.com', '$2y$10$6ZNCh.LZrWmSX4UpP8hvru5GJ9EayAg9eY9k7IXr9adBBQ0.XWOrW', 1, 24, '2025-09-18 01:49:50', 1, 'student', '2025-09-18 01:49:50', NULL, '1'),
 (59, 'sow', 'Elhadji', 'ggg@gmail.com', '$2y$10$K4g9XseXvjKhK0Wd8wkDD.vnc9Z4p6STr30NinZKpzV/.VODuyimW', 2, 24, '2025-09-18 01:50:31', 1, 'student', '2025-09-18 01:50:31', NULL, ''),
 (60, 'sow', 'Elhadji', 'gggg@gmail.com', '$2y$10$TXK7OCR0HyfQvm/VaLQUD.qf7L1xYd8yNFp8kRiDH9AwA0G5r0gvW', 1, 24, '2025-09-18 01:53:52', 1, 'etudiant', '2025-09-18 01:53:52', NULL, '2'),
-(61, 'Fadal', 'Niang', 'fadal.isep@gmail.com', '$2y$10$KbbP5rJROpdp2zT9XYPfqepgKKwoFMf/tPGoYg9nwkHIEF0Gw4Cvi', 1, 1, '2025-09-23 04:50:14', 1, 'student', '2025-09-23 04:50:14', NULL, '2');
+(61, 'Fadal', 'Niang', 'fadal.isep@gmail.com', '$2y$10$KbbP5rJROpdp2zT9XYPfqepgKKwoFMf/tPGoYg9nwkHIEF0Gw4Cvi', 1, 1, '2025-09-23 04:50:14', 1, 'student', '2025-09-23 04:50:14', NULL, '2'),
+(62, 'sow', 'Elhadji', 'eiu@gmail.com', '$2y$10$9dbPGHwkxY.YL8PPZHlAJehMBNCeKzctKMtF5TP6xMejxnqLhuJ1a', 1, 31, '2025-09-29 12:48:20', 1, 'student', '2025-09-29 12:48:20', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1272,6 +1277,42 @@ CREATE TABLE `user_matieres` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `matiere_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `validations_livrables`
+--
+
+CREATE TABLE `validations_livrables` (
+  `id` int(11) NOT NULL,
+  `projet_id` int(11) NOT NULL,
+  `livrable_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `date_validation` datetime DEFAULT current_timestamp(),
+  `statut_validation` enum('en_attente','valide','rejete') DEFAULT 'en_attente',
+  `commentaire` text DEFAULT NULL,
+  `note` decimal(5,2) DEFAULT NULL,
+  `validateur_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `validations_taches`
+--
+
+CREATE TABLE `validations_taches` (
+  `id` int(11) NOT NULL,
+  `projet_id` int(11) NOT NULL,
+  `tache_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `validateur_id` int(11) DEFAULT NULL,
+  `date_validation` datetime DEFAULT current_timestamp(),
+  `statut_validation` enum('en_attente','valide','rejete') DEFAULT 'en_attente',
+  `commentaire` text DEFAULT NULL,
+  `note` decimal(5,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -1345,6 +1386,13 @@ ALTER TABLE `etudiant`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `email` (`email`),
   ADD UNIQUE KEY `matricule` (`matricule`);
+
+--
+-- Indexes for table `exercices`
+--
+ALTER TABLE `exercices`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `cours_id` (`cours_id`);
 
 --
 -- Indexes for table `feedbacks`
@@ -1617,6 +1665,18 @@ ALTER TABLE `user_matieres`
   ADD KEY `matiere_id` (`matiere_id`);
 
 --
+-- Indexes for table `validations_livrables`
+--
+ALTER TABLE `validations_livrables`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `validations_taches`
+--
+ALTER TABLE `validations_taches`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -1636,7 +1696,7 @@ ALTER TABLE `certificats`
 -- AUTO_INCREMENT for table `cours`
 --
 ALTER TABLE `cours`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
 
 --
 -- AUTO_INCREMENT for table `courses`
@@ -1672,6 +1732,12 @@ ALTER TABLE `enseignants`
 -- AUTO_INCREMENT for table `etudiant`
 --
 ALTER TABLE `etudiant`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `exercices`
+--
+ALTER TABLE `exercices`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
@@ -1720,7 +1786,7 @@ ALTER TABLE `matieres`
 -- AUTO_INCREMENT for table `messages`
 --
 ALTER TABLE `messages`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=93;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=94;
 
 --
 -- AUTO_INCREMENT for table `messagess`
@@ -1744,31 +1810,31 @@ ALTER TABLE `messages_projet`
 -- AUTO_INCREMENT for table `modules`
 --
 ALTER TABLE `modules`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `modules_completed`
 --
 ALTER TABLE `modules_completed`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `module_contenus`
 --
 ALTER TABLE `module_contenus`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
 
 --
 -- AUTO_INCREMENT for table `progression`
 --
 ALTER TABLE `progression`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `progressions`
@@ -1882,7 +1948,7 @@ ALTER TABLE `taches`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
 
 --
 -- AUTO_INCREMENT for table `user_filieres`
@@ -1894,6 +1960,18 @@ ALTER TABLE `user_filieres`
 -- AUTO_INCREMENT for table `user_matieres`
 --
 ALTER TABLE `user_matieres`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `validations_livrables`
+--
+ALTER TABLE `validations_livrables`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `validations_taches`
+--
+ALTER TABLE `validations_taches`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
@@ -1945,6 +2023,12 @@ ALTER TABLE `devoirs_rendus`
 --
 ALTER TABLE `enseignants`
   ADD CONSTRAINT `enseignants_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+
+--
+-- Constraints for table `exercices`
+--
+ALTER TABLE `exercices`
+  ADD CONSTRAINT `exercices_ibfk_1` FOREIGN KEY (`cours_id`) REFERENCES `cours` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `forums`

@@ -2,23 +2,51 @@
 session_start();
 require_once '../config/database.php';
 
-// Vérifier connexion et rôle enseignant
-if (!isset($_SESSION['user_id']) || $_SESSION['role_id'] != 2) {
+// Debug: Afficher les informations de session pour diagnostiquer le problème
+if (isset($_GET['debug'])) {
+    echo "<pre>";
+    echo "Session ID: " . session_id() . "\n";
+    echo "User ID: " . (isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 'Non défini') . "\n";
+    echo "Role ID: " . (isset($_SESSION['role_id']) ? $_SESSION['role_id'] : 'Non défini') . "\n";
+    echo "Session data: ";
+    print_r($_SESSION);
+    echo "</pre>";
+    exit;
+}
+
+// Vérifier connexion et rôle enseignant OU admin
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['role_id']) || !in_array($_SESSION['role_id'], [2, 3])) {
+    // Debug: Log la raison de la redirection
+    error_log("Redirection vers login.php - User ID: " . (isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 'Non défini') . 
+              " - Role ID: " . (isset($_SESSION['role_id']) ? $_SESSION['role_id'] : 'Non défini'));
     header("Location: login.php");
     exit;
 }
 
-$enseignant_id = $_SESSION['user_id'];
+$user_id = $_SESSION['user_id'];
+$user_role = $_SESSION['role_id'];
 $errors = [];
 $success = "";
 
-// Récupérer la filière assignée à l'enseignant
-$stmtFiliere = $pdo->prepare("SELECT f.id, f.nom FROM users u JOIN filieres f ON u.filiere_id = f.id WHERE u.id = ?");
-$stmtFiliere->execute([$enseignant_id]);
-$enseignantFiliere = $stmtFiliere->fetch(PDO::FETCH_ASSOC);
+// Pour les enseignants, récupérer leur filière assignée
+// Pour les admins, permettre de choisir la filière
+$enseignantFiliere = null;
+$allFilieres = [];
 
-if (!$enseignantFiliere) {
-    die("Votre filière n'est pas assignée. Contactez l'administrateur.");
+if ($user_role == 2) {
+    // Enseignant - récupérer sa filière assignée
+    $stmtFiliere = $pdo->prepare("SELECT f.id, f.nom FROM users u JOIN filieres f ON u.filiere_id = f.id WHERE u.id = ?");
+    $stmtFiliere->execute([$user_id]);
+    $enseignantFiliere = $stmtFiliere->fetch(PDO::FETCH_ASSOC);
+    
+    if (!$enseignantFiliere) {
+        die("Votre filière n'est pas assignée. Contactez l'administrateur.");
+    }
+} else if ($user_role == 3) {
+    // Admin - récupérer toutes les filières
+    $stmtAllFilieres = $pdo->prepare("SELECT id, nom FROM filieres ORDER BY nom");
+    $stmtAllFilieres->execute();
+    $allFilieres = $stmtAllFilieres->fetchAll(PDO::FETCH_ASSOC);
 }
 
 // Traitement ajout cours
@@ -26,10 +54,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_cours'])) {
     $titre = trim($_POST['titre']);
     $description = trim($_POST['description']);
     $annee = trim($_POST['annee']);
-    $filiere_id = $enseignantFiliere['id'];
     $imagePath = null;
     $videoPath = null;
     $pdfPath = null;
+    
+    // Déterminer la filière selon le rôle
+    if ($user_role == 2) {
+        $filiere_id = $enseignantFiliere['id'];
+    } else if ($user_role == 3) {
+        $filiere_id = trim($_POST['filiere_id']);
+        if (empty($filiere_id)) {
+            $errors[] = "Veuillez sélectionner une filière.";
+        }
+    }
 
     // Validation titre
     if (empty($titre)) $errors[] = "Le titre est obligatoire.";
@@ -39,12 +76,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_cours'])) {
         $errors[] = "Veuillez sélectionner une année valide.";
     }
 
-    // On impose que l'enseignant ne puisse pas ajouter vidéo ET pdf en même temps
+    // On impose que l'utilisateur ne puisse pas ajouter vidéo ET pdf en même temps
     $hasVideo = isset($_FILES['video_cours']) && $_FILES['video_cours']['error'] === UPLOAD_ERR_OK;
     $hasPDF = isset($_FILES['pdf_cours']) && $_FILES['pdf_cours']['error'] === UPLOAD_ERR_OK;
 
     if ($hasVideo && $hasPDF) {
         $errors[] = "Vous ne pouvez pas ajouter une vidéo et un PDF en même temps.";
+    }
+
+    // Créer le dossier uploads s'il n'existe pas
+    $uploadDir = __DIR__ . '/uploads/';
+    if (!is_dir($uploadDir)) {
+        mkdir($uploadDir, 0755, true);
     }
 
     // Upload image couverture
@@ -58,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_cours'])) {
             $errors[] = "Image : formats autorisés jpg, jpeg, png, gif uniquement.";
         } else {
             $newFileName = uniqid('img_') . '.' . $fileExt;
-            $destPath = _DIR_ . '/uploads/' . $newFileName;
+            $destPath = $uploadDir . $newFileName;
             
             if (!move_uploaded_file($fileTmpPath, $destPath)) {
                 $errors[] = "Erreur lors de l'upload de l'image.";
@@ -79,7 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_cours'])) {
             $errors[] = "Vidéo : formats autorisés mp4, webm, ogg uniquement.";
         } else {
             $newFileName = uniqid('vid_') . '.' . $fileExt;
-            $destPath = _DIR_ . '/uploads/' . $newFileName;
+            $destPath = $uploadDir . $newFileName;
             
             if (!move_uploaded_file($fileTmpPath, $destPath)) {
                 $errors[] = "Erreur lors de l'upload de la vidéo.";
@@ -99,7 +142,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_cours'])) {
             $errors[] = "PDF : format autorisé uniquement PDF.";
         } else {
             $newFileName = uniqid('pdf_') . '.' . $fileExt;
-            $destPath = _DIR_ . '/uploads/' . $newFileName;
+            $destPath = $uploadDir . $newFileName;
             
             if (!move_uploaded_file($fileTmpPath, $destPath)) {
                 $errors[] = "Erreur lors de l'upload du PDF.";
@@ -112,21 +155,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_cours'])) {
     // Insertion dans la base
     if (empty($errors)) {
         $stmt = $pdo->prepare("INSERT INTO cours (enseignant_id, titre, description, filiere_id, annee, image_couverture, video_cours, pdf_cours, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())");
-        $stmt->execute([$enseignant_id, $titre, $description, $filiere_id, $annee, $imagePath, $videoPath, $pdfPath]);
+        $stmt->execute([$user_id, $titre, $description, $filiere_id, $annee, $imagePath, $videoPath, $pdfPath]);
         $success = "Cours ajouté avec succès !";
         $_POST = []; // reset form
     }
 }
 
-// Récupérer les cours de l'enseignant
-$stmtCours = $pdo->prepare("
-    SELECT c.*, f.nom AS filiere_nom 
-    FROM cours c 
-    JOIN filieres f ON c.filiere_id = f.id 
-    WHERE c.enseignant_id = ? 
-    ORDER BY c.created_at DESC
-");
-$stmtCours->execute([$enseignant_id]);
+// Récupérer les cours de l'utilisateur
+if ($user_role == 2) {
+    // Enseignant - ses cours uniquement
+    $stmtCours = $pdo->prepare("
+        SELECT c.*, f.nom AS filiere_nom 
+        FROM cours c 
+        JOIN filieres f ON c.filiere_id = f.id 
+        WHERE c.enseignant_id = ? 
+        ORDER BY c.created_at DESC
+    ");
+    $stmtCours->execute([$user_id]);
+} else if ($user_role == 3) {
+    // Admin - tous les cours
+    $stmtCours = $pdo->prepare("
+        SELECT c.*, f.nom AS filiere_nom, u.nom as enseignant_nom, u.prenom as enseignant_prenom
+        FROM cours c 
+        JOIN filieres f ON c.filiere_id = f.id 
+        JOIN users u ON c.enseignant_id = u.id
+        ORDER BY c.created_at DESC
+    ");
+    $stmtCours->execute();
+}
 $cours = $stmtCours->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
@@ -135,7 +191,7 @@ $cours = $stmtCours->fetchAll(PDO::FETCH_ASSOC);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Enseignant - Mes Cours</title>
+    <title><?= $user_role == 3 ? 'Dashboard Admin' : 'Dashboard Enseignant' ?> - Gestion des Cours</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* Variables et réinitialisation */
@@ -170,6 +226,19 @@ $cours = $stmtCours->fetchAll(PDO::FETCH_ASSOC);
         .container {
             display: flex;
             min-height: 100vh;
+        }
+
+        /* Debug info */
+        .debug-info {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            z-index: 9999;
         }
 
         /* Sidebar Styles */
@@ -517,7 +586,7 @@ $cours = $stmtCours->fetchAll(PDO::FETCH_ASSOC);
             gap: 5px;
         }
 
-        .course-filiere, .course-annee {
+        .course-filiere, .course-annee, .course-author {
             font-size: 0.85rem;
             color: var(--text-light);
             background-color: #f1f5f9;
@@ -529,6 +598,11 @@ $cours = $stmtCours->fetchAll(PDO::FETCH_ASSOC);
         .course-annee {
             background-color: #e8f5e9;
             color: #2e7d32;
+        }
+
+        .course-author {
+            background-color: #fff3e0;
+            color: #ef6c00;
         }
 
         .course-actions {
@@ -699,15 +773,27 @@ $cours = $stmtCours->fetchAll(PDO::FETCH_ASSOC);
     </style>
 </head>
 <body>
+    <!-- Debug info (visible seulement en mode debug) -->
+    <?php if (isset($_GET['debug'])): ?>
+    <div class="debug-info">
+        User ID: <?= $_SESSION['user_id'] ?? 'Non défini' ?><br>
+        Role ID: <?= $_SESSION['role_id'] ?? 'Non défini' ?><br>
+        Session ID: <?= session_id() ?>
+    </div>
+    <?php endif; ?>
+
     <div class="container">
         <!-- Sidebar Navigation -->
         <aside class="sidebar">
             <div class="sidebar-header">
-                <h1><i class="fas fa-chalkboard-teacher"></i> Espace Enseignant</h1>
+                <h1>
+                    <i class="fas fa-<?= $user_role == 3 ? 'user-shield' : 'chalkboard-teacher' ?>"></i> 
+                    Espace <?= $user_role == 3 ? 'Admin' : 'Enseignant' ?>
+                </h1>
             </div>
             
             <nav class="sidebar-nav">
-                <a href="teacher_dashboard.php" class="nav-item">
+                <a href="<?= $user_role == 3 ? 'admin_dashboard.php' : 'teacher_dashboard.php' ?>" class="nav-item">
                     <i class="fas fa-tachometer-alt"></i>
                     <span>Tableau de bord</span>
                 </a>
@@ -717,7 +803,7 @@ $cours = $stmtCours->fetchAll(PDO::FETCH_ASSOC);
                 </a>
                 <a href="#cours-list" class="nav-item">
                     <i class="fas fa-book"></i>
-                    <span>Mes cours</span>
+                    <span><?= $user_role == 3 ? 'Tous les cours' : 'Mes cours' ?></span>
                 </a>
                 <a href="#" class="nav-item">
                     <i class="fas fa-calendar-alt"></i>
@@ -725,7 +811,7 @@ $cours = $stmtCours->fetchAll(PDO::FETCH_ASSOC);
                 </a>
                 <a href="#" class="nav-item">
                     <i class="fas fa-users"></i>
-                    <span>Étudiants</span>
+                    <span><?= $user_role == 3 ? 'Utilisateurs' : 'Étudiants' ?></span>
                 </a>
                 <a href="#" class="nav-item">
                     <i class="fas fa-chart-bar"></i>
@@ -750,9 +836,9 @@ $cours = $stmtCours->fetchAll(PDO::FETCH_ASSOC);
             <div class="header">
                 <h2><i class="fas fa-book-open"></i> Gestion des Cours</h2>
                 <div class="breadcrumb">
-                    <a href="teacher_dashboard.php">Tableau de bord</a>
+                    <a href="<?= $user_role == 3 ? 'admin_dashboard.php' : 'teacher_dashboard.php' ?>">Tableau de bord</a>
                     <i class="fas fa-chevron-right"></i>
-                    <span>Mes cours</span>
+                    <span><?= $user_role == 3 ? 'Tous les cours' : 'Mes cours' ?></span>
                 </div>
             </div>
 
@@ -799,9 +885,24 @@ $cours = $stmtCours->fetchAll(PDO::FETCH_ASSOC);
                                       class="form-control"><?= isset($_POST['description']) ? htmlspecialchars($_POST['description']) : '' ?></textarea>
                         </div>
                         
-                        <div class="form-group">
-                            <p><strong>Filière :</strong> <?= htmlspecialchars($enseignantFiliere['nom']) ?></p>
-                        </div>
+                        <?php if ($user_role == 2): ?>
+                            <div class="form-group">
+                                <p><strong>Filière :</strong> <?= htmlspecialchars($enseignantFiliere['nom']) ?></p>
+                            </div>
+                        <?php else: ?>
+                            <div class="form-group">
+                                <label for="filiere_id">Filière <span style="color: var(--warning-color)">*</span></label>
+                                <select id="filiere_id" name="filiere_id" required class="form-control">
+                                    <option value="">Sélectionnez une filière</option>
+                                    <?php foreach ($allFilieres as $filiere): ?>
+                                        <option value="<?= $filiere['id'] ?>" 
+                                                <?= (isset($_POST['filiere_id']) && $_POST['filiere_id'] == $filiere['id']) ? 'selected' : '' ?>>
+                                            <?= htmlspecialchars($filiere['nom']) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                        <?php endif; ?>
                         
                         <div class="form-group">
                             <label for="annee">Année <span style="color: var(--warning-color)">*</span></label>
@@ -854,7 +955,7 @@ $cours = $stmtCours->fetchAll(PDO::FETCH_ASSOC);
                 <div class="card">
                     <div class="card-header">
                         <i class="fas fa-book"></i>
-                        <h3>Mes cours (<?= count($cours) ?>)</h3>
+                        <h3><?= $user_role == 3 ? 'Tous les cours' : 'Mes cours' ?> (<?= count($cours) ?>)</h3>
                     </div>
                     
                     <div class="card-body">
@@ -917,17 +1018,22 @@ $cours = $stmtCours->fetchAll(PDO::FETCH_ASSOC);
                                                     <?php if ($anneeDisplay): ?>
                                                         <span class="course-annee"><?= htmlspecialchars($anneeDisplay) ?></span>
                                                     <?php endif; ?>
+                                                    <?php if ($user_role == 3 && isset($c['enseignant_nom'])): ?>
+                                                        <span class="course-author">Par: <?= htmlspecialchars($c['enseignant_prenom'] . ' ' . $c['enseignant_nom']) ?></span>
+                                                    <?php endif; ?>
                                                 </div>
                                                 
                                                 <div class="course-actions">
-                                                    <a href="modifier_cours.php?id=<?= $c['id'] ?>" class="btn btn-sm btn-edit">
-                                                        <i class="fas fa-edit"></i>
-                                                    </a>
-                                                    <a href="supprimer_cours.php?id=<?= $c['id'] ?>" 
-                                                       onclick="return confirm('Voulez-vous vraiment supprimer ce cours ?');" 
-                                                       class="btn btn-sm btn-delete">
-                                                        <i class="fas fa-trash"></i>
-                                                    </a>
+                                                    <?php if ($user_role == 3 || $c['enseignant_id'] == $user_id): ?>
+                                                        <a href="modifier_cours.php?id=<?= $c['id'] ?>" class="btn btn-sm btn-edit">
+                                                            <i class="fas fa-edit"></i>
+                                                        </a>
+                                                        <a href="supprimer_cours.php?id=<?= $c['id'] ?>" 
+                                                           onclick="return confirm('Voulez-vous vraiment supprimer ce cours ?');" 
+                                                           class="btn btn-sm btn-delete">
+                                                            <i class="fas fa-trash"></i>
+                                                        </a>
+                                                    <?php endif; ?>
                                                 </div>
                                             </div>
                                         </div>
@@ -952,7 +1058,7 @@ $cours = $stmtCours->fetchAll(PDO::FETCH_ASSOC);
         <div class="modal-content">
             <div class="modal-header">
                 <h3>Visualisation du document PDF</h3>
-                <button class="close-modal" onclick="closePdfModal()">&times;</button>
+                <button class="close-modal" onclick="closePdfModal()">×</button>
             </div>
             <div class="modal-body">
                 <iframe id="pdfFrame" src=""></iframe>

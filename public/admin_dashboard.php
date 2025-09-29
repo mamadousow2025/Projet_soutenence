@@ -1080,6 +1080,10 @@ $quizzes = $quizzStmt->fetchAll(PDO::FETCH_ASSOC);
                <a href="/lms_isep/public/messagerie.php" target="_top" onclick="window.location.href='/lms_isep/public/messagerie.php'; return false;">
     <i class="fa-solid fa-envelope"></i> Messagerie
 </a>
+<a href="/lms_isep/public/projet.php" target="_top" onclick="window.location.href='/lms_isep/public/projet.php'; return false;">
+    <i class="fa-solid fa-diagram-project"></i> Projets
+</a>
+
 
             </div>
         </div>
@@ -1344,7 +1348,7 @@ $quizzes = $quizzStmt->fetchAll(PDO::FETCH_ASSOC);
         <!-- SECTION COURSES -->
         <div id="courses" class="section" style="<?= $defaultSection === 'courses' ? '' : 'display:none;' ?>">
             <h2 class="section-title">Tous les cours</h2>
-            <a href="add_course.php" class="button add" style="margin-bottom:25px;">
+            <a href="cours.php" class="button add" style="margin-bottom:25px;">
                 <i class="fa fa-plus"></i> Ajouter un cours
             </a>
             <table>
@@ -1369,12 +1373,13 @@ $quizzes = $quizzStmt->fetchAll(PDO::FETCH_ASSOC);
                                 </span>
                             </td>
                             <td>
-                                <a href="edit_course.php?id=<?= $course['id'] ?>" class="button edit">
+                                <a href="modifier_cours.php?id=<?= $course['id'] ?>" class="button edit">
                                     <i class="fa fa-edit"></i>
                                 </a>
-                                <a href="delete_course.php?id=<?= $course['id'] ?>" class="button danger" onclick="return confirm('Confirmer la suppression ?')">
-                                    <i class="fa fa-trash"></i>
-                                </a>
+                                <a href="supprimer_cours.php?id=<?= $course['id'] ?>" class="button danger" 
+   onclick="return confirm('Êtes-vous sûr de vouloir supprimer définitivement ce cours ? Cette action supprimera également tous les modules, leçons et quizzes associés. Cette action est irréversible.')">
+    <i class="fa fa-trash"></i>
+</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -1444,13 +1449,13 @@ $quizzes = $quizzStmt->fetchAll(PDO::FETCH_ASSOC);
                             </td>
                             <td><?= $project['date_creation'] ?></td>
                             <td>
-                                <a href="view_project.php?id=<?= $project['id'] ?>" class="button edit">
+                                <a href="modifier_projet.php?id=<?= $project['id'] ?>" class="button edit">
                                     <i class="fa fa-eye"></i>
                                 </a>
-                                <a href="validate_project.php?id=<?= $project['id'] ?>" class="button success">
+                                <a href="validate_projet.php?id=<?= $project['id'] ?>" class="button success">
                                     <i class="fa fa-check"></i>
                                 </a>
-                                <a href="delete_project.php?id=<?= $project['id'] ?>" class="button danger" onclick="return confirm('Confirmer la suppression ?')">
+                                <a href="supprimer_projet.php?id=<?= $project['id'] ?>" class="button danger" onclick="return confirm('Confirmer la suppression ?')">
                                     <i class="fa fa-trash"></i>
                                 </a>
                             </td>
@@ -1463,8 +1468,8 @@ $quizzes = $quizzStmt->fetchAll(PDO::FETCH_ASSOC);
         <!-- SECTION QUIZZES -->
         <div id="quizzes" class="section" style="<?= $defaultSection === 'quizzes' ? '' : 'display:none;' ?>">
             <h2 class="section-title">Quizzes</h2>
-            <a href="add_quiz.php" class="button add" style="margin-bottom:25px;">
-                <i class="fa fa-plus"></i> Ajouter un quiz
+           
+             
             </a>
             <table>
                 <thead>
@@ -1492,12 +1497,12 @@ $quizzes = $quizzStmt->fetchAll(PDO::FETCH_ASSOC);
                                 </td>
                                 <td>
                                     <a href="edit_quiz.php?id=<?= $quiz['id'] ?>" class="button edit" title="Modifier">
-                                        <i class="fa fa-edit"></i>
-                                    </a>
+    <i class="fa fa-edit"></i>
+</a>
                                     <a href="delete_quiz.php?id=<?= $quiz['id'] ?>" class="button danger" title="Supprimer"
-                                    onclick="return confirm('Voulez-vous vraiment supprimer ce quiz ?');">
-                                        <i class="fa fa-trash"></i>
-                                    </a>
+   onclick="return confirm('Voulez-vous vraiment supprimer ce quiz ?');">
+    <i class="fa fa-trash"></i>
+</a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -1657,7 +1662,7 @@ $quizzes = $quizzStmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
 
         <footer>
-            <p>© 2025 Admin Dashboard - Système de gestion éducative</p>
+            <p>© 2025 Admin Dashboard - Système E-leraning de ISEP Aboulaye Ly Thies</p>
         </footer>
     </div>
 

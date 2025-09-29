@@ -16,84 +16,92 @@ if (!isset($_SESSION['utilisateur'])) {
 // Simulation des départements et filières
 $departements = [
     [
-        'nom' => 'Département Informatique',
-        'chef' => 'Dr. Mamadou Diop',
+        'nom' => 'Electronique – Informatique - Télécommunication',
+        'chef' => 'Mr. Moustapha Sarr NDIAYE',
         'description' => 'Formation aux métiers du numérique et de la programmation',
         'filieres' => [
             [
-                'nom' => 'Génie Logiciel',
+                'nom' => ' 
+DÉVELOPPEMENT WEB & MOBILE',
                 'debouchés' => 'Développeur, Architecte logiciel, Chef de projet',
                 'icon' => 'fas fa-laptop-code'
             ],
             [
-                'nom' => 'Réseaux et Sécurité',
+                'nom' => ' 
+RÉSEAUX & TÉLÉCOMMUNICATIONS',
                 'debouchés' => 'Administrateur réseau, Expert cybersécurité, Consultant',
                 'icon' => 'fas fa-shield-alt'
             ],
             [
-                'nom' => 'Intelligence Artificielle',
-                'debouchés' => 'Data Scientist, Ingénieur ML, Expert IA',
+                'nom' => 'SYSTÈMES & RÉSEAUX INFORMATIQUES',
+                'debouchés' => 'Gestionnaire de parc informatique, Gestionnaire de base de données, Technicien support',
                 'icon' => 'fas fa-brain'
             ]
         ],
-        'video' => 'https://www.youtube.com/embed/abcdefghijk',
-        'images' => ['informatique1.jpg', 'informatique2.jpg', 'informatique3.jpg', 'informatique4.jpg']
+       'video' => 'https://www.youtube.com/embed/SBTxWpKqiVY',
+
+        'images' => ['images/ndiaye.jpg', 'informatique2.jpg', 'informatique3.jpg', 'informatique4.jpg']
     ],
     [
-        'nom' => 'Département Génie Civil',
-        'chef' => 'Prof. Awa Fall',
-        'description' => 'Formation aux techniques de construction et infrastructures',
+        'nom' => 'Téchnologies de l Information et de la Communication',
+        'chef' => 'Mr. Arfang SARR',
+        'description' => 'Formation aux techniques Création Multimédia/Production Cinématographique et Audiovisuelle. ',
         'filieres' => [
             [
-                'nom' => 'Bâtiment et Travaux Publics',
-                'debouchés' => 'Ingénieur BTP, Conducteur de travaux, Chef de chantier',
+                'nom' => 'CRÉATION MULTIMÉDIA',
+                'debouchés' => 'Technicien supérieur en radio, Technicien supérieur en radio
+Infographiste, Chef de projet',
                 'icon' => 'fas fa-hard-hat'
             ],
             [
-                'nom' => 'Géomatique et Topographie',
-                'debouchés' => 'Géomètre-topographe, Cartographe, Technicien géomètre',
+                'nom' => ' 
+ART GRAPHIQUE & NUMÉRIQUE',
+                'debouchés' => 'Webdesignere, Typographiste, Directeur de Création',
                 'icon' => 'fas fa-drafting-compass'
             ]
         ],
-        'video' => 'https://www.youtube.com/embed/lmnopqrstuv',
+        'video' => 'https://www.youtube.com/embed/SBTxWpKqiVY',
         'images' => ['genie-civil1.jpg', 'genie-civil2.jpg', 'genie-civil3.jpg']
     ],
     [
-        'nom' => 'Département Télécommunications',
-        'chef' => 'Dr. Jean Ndiaye',
+        'nom' => 'Administration Services Communautes',
+        'chef' => '	
+M. Amar NDOYE',
         'description' => 'Formation aux réseaux de communication et systèmes embarqués',
         'filieres' => [
             [
-                'nom' => 'Réseaux Télécoms',
-                'debouchés' => 'Ingénieur télécoms, Technicien réseaux, Architecte solutions',
+                'nom' => 'GESTION DES AFFAIRES ADMINISTRATIVES & FINANCIÈRES',
+                'debouchés' => 'Assistant de Manager / Direction, Assistant ressources humaines, Assistant en cabinet conseil',
                 'icon' => 'fas fa-broadcast-tower'
             ],
             [
-                'nom' => 'Systèmes Embarqués',
-                'debouchés' => 'Ingénieur embedded, Développeur firmware, Concepteur systèmes',
+                'nom' => 'CONTACT HUMAIN',
+                'debouchés' => 'Agent d’accueil, Délégué commercial, Guide touristique',
                 'icon' => 'fas fa-microchip'
             ]
         ],
-        'video' => 'https://www.youtube.com/embed/wxyzabcdefg',
+        'video' => 'https://www.youtube.com/embed/SBTxWpKqiVY',
         'images' => ['telecoms1.jpg', 'telecoms2.jpg', 'telecoms3.jpg', 'telecoms4.jpg']
     ],
     [
-        'nom' => 'Département Management',
-        'chef' => 'Prof. Marie Sène',
+        'nom' => 'Ennergie Environnement',
+        'chef' => 'Papa Ndiaga SEYE ',
         'description' => 'Formation aux sciences de gestion et management des entreprises',
         'filieres' => [
             [
-                'nom' => 'Management des Organisations',
+                'nom' => ' 
+ÉNERGIES RENOUVELABLES',
                 'debouchés' => 'Manager, Chef de service, Responsable administratif',
                 'icon' => 'fas fa-chart-line'
             ],
             [
-                'nom' => 'Gestion Financière',
-                'debouchés' => 'Contrôleur de gestion, Analyste financier, Comptable',
+                'nom' => '  
+CONSEIL INFO-ÉNERGIE',
+                'debouchés' => 'Conseiller Info-énergie, Mandataire en Info-énergie',
                 'icon' => 'fas fa-coins'
             ]
         ],
-        'video' => 'https://www.youtube.com/embed/hijklmnopqr',
+        'video' => 'https://www.youtube.com/embed/SBTxWpKqiVY',
         'images' => ['management1.jpg', 'management2.jpg', 'management3.jpg']
     ]
 ];
@@ -149,19 +157,19 @@ $demonstrations = [
 // Témoignages d'étudiants
 $temoignages = [
     [
-        'nom' => 'Aïcha Diop',
-        'filiere' => 'Génie Logiciel',
+        'nom' => 'El Hadji Mamadou SOW',
+        'filiere' => 'Développement Web & Mobile',
         'texte' => 'Cette plateforme a révolutionné ma façon d\'apprendre. Les ressources sont complètes et accessibles à tout moment.',
         'avatar' => 'etudiant1.jpg'
     ],
     [
-        'nom' => 'Mohamed Camara',
-        'filiere' => 'Réseaux et Sécurité',
+        'nom' => 'Bacary Biaye',
+        'filiere' => 'Réseaux et Télécommunications',
         'texte' => 'Les vidéos explicatives et les forums m\'ont beaucoup aidé à comprendre des concepts complexes.',
         'avatar' => 'etudiant2.jpg'
     ],
     [
-        'nom' => 'Fatou Ndiaye',
+        'nom' => 'Hawa Oumar Bassoum',
         'filiere' => 'Management',
         'texte' => 'L\'interface intuitive et les fonctionnalités de la plateforme rendent l\'apprentissage agréable et efficace.',
         'avatar' => 'etudiant3.jpg'
@@ -1164,7 +1172,7 @@ $documents = [
             <h2>Plateforme E-learning ISEP ABDOULAYE LY DE THIES</h2>
             <p>Découvrez une nouvelle expérience d'apprentissage en ligne avec nos formations de qualité et nos ressources pédagogiques innovantes</p>
             <div>
-                <a href="#" class="btn">Commencer maintenant</a>
+                <a href="login.php" class="btn">Commencer maintenant</a>
                <a href="docs/pdf_68b33c253b6dc.pdf" class="btn btn-outline" target="_blank">Guide d'utilisation</a>
 
             </div>

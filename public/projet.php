@@ -337,6 +337,20 @@ foreach ($last_6_months as $month) {
     $stmt->execute([$month]);
     $monthly_stats[] = $stmt->fetchColumn();
 }
+
+// Fonction pour déterminer le dashboard approprié selon le rôle
+function getDashboardUrl($role) {
+    switch ($role) {
+        case 'admin':
+            return 'admin_dashboard.php';
+        case 'enseignant':
+            return 'teacher_dashboard.php';
+        case 'etudiant':
+            return 'etudiant_dashboard.php';
+        default:
+            return 'login.php';
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -441,6 +455,37 @@ foreach ($last_6_months as $month) {
             box-shadow: 0 4px 15px rgba(255, 152, 0, 0.4);
             text-transform: uppercase;
             letter-spacing: 0.5px;
+        }
+
+        /* Nouveau style pour le bouton Retour Tableau de Bord */
+        .btn-dashboard {
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-dashboard:hover {
+            background: linear-gradient(135deg, #1976D2 0%, #0D47A1 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(33, 150, 243, 0.5);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-dashboard i {
+            margin-right: 10px;
+            font-size: 18px;
         }
 
         /* Cartes de statistiques professionnelles */
@@ -1002,6 +1047,11 @@ foreach ($last_6_months as $month) {
         .stat-card:hover {
             transform: none;
         }
+
+        /* Exception pour le bouton dashboard qui garde son effet hover */
+        .btn-dashboard {
+            transition: all 0.3s ease !important;
+        }
     </style>
 </head>
 <body>
@@ -1048,6 +1098,13 @@ foreach ($last_6_months as $month) {
                                 <i class="fas fa-user" style="color: #FF9800; margin-right: 10px;"></i>
                                 <?= ($_SESSION['prenom'] ?? 'Utilisateur') . ' ' . ($_SESSION['nom'] ?? '') ?>
                             </div>
+                            
+                            <!-- Nouveau bouton Retour Tableau de Bord -->
+                            <a href="<?= getDashboardUrl($role) ?>" class="btn-dashboard">
+                                <i class="fas fa-tachometer-alt"></i>
+                                Retour Tableau de Bord
+                            </a>
+                            
                             <a href="logout.php" class="btn-logout">
                                 <i class="fas fa-sign-out-alt" style="margin-right: 10px;"></i>
                                 Déconnexion Sécurisée

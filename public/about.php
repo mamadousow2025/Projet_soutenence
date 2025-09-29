@@ -294,7 +294,7 @@ include(__DIR__ . '/../includes/header.php');
     </div>
 
     <div class="founder">
-      <img src="assets/images/fondateur2.jpg" alt="Fallou Ndiaye">
+      <img src="../images/leuz.jpg" alt="Fallou Ndiaye">
       <h3>Fallou Ndiaye</h3>
       <p>Expert en technologies éducatives et mentor des étudiants</p>
     </div>
@@ -306,13 +306,13 @@ include(__DIR__ . '/../includes/header.php');
     </div>
 
     <div class="founder">
-      <img src="assets/images/fondateur4.jpg" alt="Bacary Biaye">
+      <img src="../images/bac.jpg" alt="Bacary Biaye">
       <h3>Bacary Biaye</h3>
       <p>Développeur Full Stack, garant de la performance</p>
     </div>
 
     <div class="founder">
-      <img src="assets/images/fondateur5.jpg" alt="Hawa Oumar Bassoum">
+      <img src="../images/aw.jpg" alt="Hawa Oumar Bassoum">
       <h3>Hawa Oumar Bassoum</h3>
       <p>Chargée de communication et coordinatrice des activités</p>
     </div>

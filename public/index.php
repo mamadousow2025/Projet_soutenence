@@ -824,7 +824,7 @@ session_start();
         La plateforme E-learning de l'ISEP Thiès a pour mission d'offrir une éducation moderne et accessible à tous.
         Elle accompagne les étudiants des filières Développement Web, Réseaux Télécom et Administration Système dans leur apprentissage.
         Notre vision est de transformer l'éducation en un espace d'innovation, de collaboration et de réussite académique.
-      </p>
+      </p><br>
       <div class="about-grid">
         <div class="about-box">
           <div class="about-icon"><i class="fas fa-bullseye"></i></div>
