@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 30, 2025 at 01:25 AM
+-- Generation Time: Oct 05, 2025 at 06:36 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -105,7 +105,8 @@ INSERT INTO `cours` (`id`, `enseignant_id`, `titre`, `description`, `filiere_id`
 (44, 59, 'metier du rails', 'ndkncd', 24, NULL, NULL, NULL, '2025-09-18 01:51:34', 1, '2025-09-18 01:51:34', 'active', '', '', 0),
 (49, 28, 'Interface home machine', 'c est un cours qui est tellement pratique', 1, NULL, NULL, NULL, '2025-09-26 12:44:16', 1, '2025-09-26 12:44:16', 'active', '', '', 0),
 (50, 28, 'Maintenance machine', 'c est telelement coool', 1, NULL, NULL, NULL, '2025-09-26 12:44:39', 1, '2025-09-26 12:44:39', 'active', '', '', 0),
-(54, 28, 'Cours de Java', 'module de 2oh', 1, NULL, NULL, NULL, '2025-09-30 01:18:41', 1, '2025-09-30 01:18:41', 'active', '', '', 0);
+(54, 28, 'Cours de Java', 'module de 2oh', 1, NULL, NULL, NULL, '2025-09-30 01:18:41', 1, '2025-09-30 01:18:41', 'active', '', '', 0),
+(55, 28, 'Power Bi', 'permert de creer des dasbaord', 1, NULL, NULL, NULL, '2025-10-05 18:32:49', 1, '2025-10-05 18:32:49', 'active', '', '', 0);
 
 -- --------------------------------------------------------
 
@@ -241,6 +242,31 @@ CREATE TABLE `exercices` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `feedback`
+--
+
+CREATE TABLE `feedback` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `commentaire` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `livrable_id` int(11) DEFAULT NULL,
+  `enseignant_id` int(11) DEFAULT NULL,
+  `note` float DEFAULT NULL,
+  `commentaire_enseignant` text DEFAULT NULL,
+  `date_correction` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `feedback`
+--
+
+INSERT INTO `feedback` (`id`, `user_id`, `commentaire`, `created_at`, `livrable_id`, `enseignant_id`, `note`, `commentaire_enseignant`, `date_correction`) VALUES
+(1, 0, NULL, '2025-10-04 18:04:00', 1, 28, 20, 'tres bien', '2025-10-04 20:29:08');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `feedbacks`
 --
 
@@ -361,8 +387,17 @@ CREATE TABLE `livrables` (
   `date_soumission` datetime DEFAULT current_timestamp(),
   `commentaire` text DEFAULT NULL,
   `note` decimal(4,2) DEFAULT NULL,
-  `statut` varchar(20) DEFAULT 'en attente'
+  `statut` varchar(20) DEFAULT 'en attente',
+  `fichier_taille` bigint(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `livrables`
+--
+
+INSERT INTO `livrables` (`id`, `tache_id`, `etudiant_id`, `fichier_nom`, `fichier_chemin`, `date_soumission`, `commentaire`, `note`, `statut`, `fichier_taille`) VALUES
+(1, 1, 42, '2025-10-04_19-44-21_68e15cf5e654b_CamScanner02-10-202515.39.pdf', '../uploads/livrables/11/42/2025-10-04_19-44-21_68e15cf5e654b_CamScanner02-10-202515.39.pdf', '2025-10-04 19:44:21', 'kk dmvkqe', NULL, 'remplace', 1218887),
+(2, 1, 42, '2025-10-04_20-36-01_68e16911c9bed_CamScanner02-10-202515.39.pdf', '../uploads/livrables/11/42/2025-10-04_20-36-01_68e16911c9bed_CamScanner02-10-202515.39.pdf', '2025-10-04 20:36:01', 'Bonjour Monsieur Diallo voici mes livrables du jour', NULL, 'soumis', 1218887);
 
 -- --------------------------------------------------------
 
@@ -435,7 +470,7 @@ INSERT INTO `messages` (`id`, `expediteur_id`, `destinataire_id`, `sujet`, `cont
 (38, 3, 20, 'cours de laravel', 'n hn', 0, '2025-09-22 03:03:56', 0, 2, 2),
 (39, 3, 20, 'hhvh', 'bbbbbb', 0, '2025-09-22 03:06:11', 0, 2, 2),
 (40, 3, 28, 'hhvh', 'm', 0, '2025-09-22 03:09:46', 0, 2, 2),
-(41, 30, 28, 'pour la certifcation', 'Bonjour Monsieur diallo comment vous allez j esperque tu vas \r\nil faut que les apprenenant revisent bien car bientot les exenan', 0, '2025-09-22 03:39:32', 0, 0, 0),
+(41, 30, 28, 'pour la certifcation', 'Bonjour Monsieur diallo comment vous allez j esperque tu vas \r\nil faut que les apprenenant revisent bien car bientot les exenan', 0, '2025-09-22 03:39:32', 1, 0, 0),
 (42, 28, 42, 'cours django', 'bonjour ablaye je veux que vous reviser bien les cours', 0, '2025-09-22 03:41:58', 0, 0, 0),
 (43, 30, 42, 'cours django', 'bonjour ablaye je veux que vous reviser bien les cours', 0, '2025-09-22 04:00:56', 0, 0, 0),
 (44, 30, 42, 'cours django', 'bonjour ablaye je veux que vous reviser bien les cours', 0, '2025-09-22 04:20:09', 0, 0, 0),
@@ -520,8 +555,18 @@ CREATE TABLE `messages_projet` (
   `utilisateur_id` int(11) NOT NULL,
   `message` text NOT NULL,
   `date_creation` timestamp NOT NULL DEFAULT current_timestamp(),
-  `date_envoi` datetime DEFAULT current_timestamp()
+  `date_envoi` datetime DEFAULT current_timestamp(),
+  `contenu` text NOT NULL,
+  `type_message` varchar(50) NOT NULL DEFAULT 'info'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `messages_projet`
+--
+
+INSERT INTO `messages_projet` (`id`, `projet_id`, `enseignant_id`, `utilisateur_id`, `message`, `date_creation`, `date_envoi`, `contenu`, `type_message`) VALUES
+(3, 11, NULL, 28, '', '2025-10-04 18:28:17', '2025-10-04 20:28:17', 'whw f', 'info'),
+(4, 11, NULL, 28, '', '2025-10-04 18:28:49', '2025-10-04 20:28:49', 'bonjour dans l enseble c est bei', 'success');
 
 -- --------------------------------------------------------
 
@@ -553,7 +598,8 @@ INSERT INTO `modules` (`id`, `cours_id`, `titre`, `type`, `description`, `conten
 (7, 42, 'procedure de la culture', 'normal', NULL, NULL, 1, '2025-09-17 22:09:26', '2025-09-17 22:09:26', 0),
 (9, 44, 'rails', 'normal', NULL, NULL, 0, '2025-09-17 23:51:55', '2025-09-17 23:51:55', 0),
 (11, 50, 'securite', 'normal', NULL, NULL, 1, '2025-09-26 10:46:21', '2025-09-26 10:46:21', 0),
-(12, 54, 'les base de java', 'normal', NULL, NULL, 0, '2025-09-29 23:19:17', '2025-09-29 23:19:17', 0);
+(12, 54, 'les base de java', 'normal', NULL, NULL, 0, '2025-09-29 23:19:17', '2025-09-29 23:19:17', 0),
+(13, 55, 'opertationel', 'normal', NULL, NULL, 1, '2025-10-05 16:33:42', '2025-10-05 16:33:42', 0);
 
 -- --------------------------------------------------------
 
@@ -1165,15 +1211,16 @@ CREATE TABLE `taches` (
   `date_debut` date DEFAULT NULL,
   `date_fin` date DEFAULT NULL,
   `priorite` enum('basse','moyenne','haute') DEFAULT 'moyenne',
-  `date_limite` date DEFAULT NULL
+  `date_limite` date DEFAULT NULL,
+  `contenu` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `taches`
 --
 
-INSERT INTO `taches` (`id`, `projet_id`, `titre`, `description`, `statut`, `date_creation`, `date_debut`, `date_fin`, `priorite`, `date_limite`) VALUES
-(1, 11, 'anyser les besoibj w ', '  n n n n ', 'a_faire', '2025-09-24 05:20:43', NULL, NULL, 'moyenne', '2025-09-24');
+INSERT INTO `taches` (`id`, `projet_id`, `titre`, `description`, `statut`, `date_creation`, `date_debut`, `date_fin`, `priorite`, `date_limite`, `contenu`) VALUES
+(1, 11, 'anyser les besoibj w ', '  n n n n ', 'a_faire', '2025-09-24 05:20:43', NULL, NULL, 'moyenne', '2025-09-24', NULL);
 
 -- --------------------------------------------------------
 
@@ -1194,64 +1241,65 @@ CREATE TABLE `users` (
   `role` varchar(50) NOT NULL DEFAULT 'student',
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
   `nom_filiere` varchar(100) DEFAULT NULL,
-  `annee` enum('1','2') DEFAULT NULL
+  `annee` enum('1','2') DEFAULT NULL,
+  `user_type` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `nom`, `prenom`, `email`, `password`, `role_id`, `filiere_id`, `date_creation`, `actif`, `role`, `created_at`, `nom_filiere`, `annee`) VALUES
-(2, 'sow', 'fallou', 'fallou@gmail.com', '$2y$10$/DAn2Q6QekSpOXeQrlSiqu8HWWu0q1tJOHfvO/r7c6kYL5mDM7E86', 1, 1, '2025-08-08 17:18:38', 1, 'student', '2025-08-30 03:14:34', NULL, NULL),
-(3, 'sow', 'Elhadji', 'isa@gmail.com', '$2y$10$BMsSUTS61qy/Ri9U0aJGBussXLAOSWxtiAjuDIGZnngxjzoCmdYUy', 1, 9, '2025-08-08 17:20:31', 1, 'student', '2025-08-30 03:14:34', NULL, NULL),
-(4, 'sow', 'Elhadji', 'awa@gmail.com', '$2y$10$O3aKN8oh7QMIBHUD9UvyHeMeNOeduK.nLKrlOIIqslTxX5WNDnGtK', 1, 1, '2025-08-08 17:37:08', 1, 'student', '2025-08-30 03:14:34', NULL, NULL),
-(5, 'sow', 'awa', 'aliou@gmail.com', '$2y$10$BevTWtwEjuG7BvJt9WdRAO6tZIV7r0Q2k2cF8G0y6/P1Xs9QdxHFu', 2, NULL, '2025-08-08 21:17:18', 1, 'student', '2025-08-30 03:14:34', NULL, NULL),
-(6, 'sow', 'Elhadji', 'aliouu@gmail.com', '$2y$10$tBqNwU0GfPSTf837ZRWD3u/iT.5mJnDQ8CGWT1rGOPd5yNyFmh3mK', 1, 2, '2025-08-08 21:18:29', 1, 'student', '2025-08-30 03:14:34', NULL, NULL),
-(7, 'sow', 'Elhadji Mamadou Sow', 'sow@gmail.com', '$2y$10$S9oTZbh73ZBne/sS7DOf3OGkLFUe0aGKJCEkM.tABO3ZB5XGQYcvu', 2, NULL, '2025-08-08 22:45:45', 1, 'student', '2025-08-30 03:14:34', NULL, NULL),
-(8, 'sow', 'Elhadji Mamadou Sow', 'soww@gmail.com', '$2y$10$VY3KL/iEdGRmhONMYY4zBO.m0eHf7GFSXiUZIxpVYFa2ANZr6BJzi', 1, 14, '2025-08-08 22:48:33', 1, 'student', '2025-08-30 03:14:34', NULL, NULL),
-(9, 'sow', 'Amadou', 'soow@gmail.com', '$2y$10$anhDmCeqwfrlVOQDRbIf7.TxzahF.XVgyz6TfrpdamOkZcENP5sUa', 1, 1, '2025-08-09 01:43:36', 1, 'student', '2025-08-30 03:14:34', NULL, NULL),
-(10, 'sow', 'fifi', 'fi@gmail.com', '$2y$10$76tmrKBCQq0glGKjg/8kOepLpxULnQHfrBn0r33kBfWB1/nprBBWC', 1, 1, '2025-08-09 01:50:16', 1, 'student', '2025-08-30 03:14:34', NULL, NULL),
-(11, 'sow', 'isaa', 'aw@gmail.com', '$2y$10$XTk/KkA12n0P3ZMiYIsc.OO4qNwJ3wgtitKv5KTN5UPJCIOOl8InO', 1, 1, '2025-08-09 01:58:23', 1, 'student', '2025-08-30 03:14:34', NULL, NULL),
-(12, 'sow', 'ma', 'ma@gmail.com', '$2y$10$jpF6LdDUimLzwBiy8HEotu/gTVJUhsh6FJ1HNygcjtkulk2yz/Dvy', 1, 14, '2025-08-09 02:57:59', 1, 'student', '2025-08-30 03:14:34', NULL, NULL),
-(13, 'Diallo', 'Ami', 'ami@gmail.com', '$2y$10$bP8S/WLMKy4gg3nAiB1HfOxL7tU3eVxiJTvNyvrCAOaQe/QWv0Gpm', 2, NULL, '2025-08-09 22:06:40', 1, 'student', '2025-08-30 03:14:34', NULL, NULL),
-(15, 'Ndiaye', 'Fallou', 'ndiayee@gmail.com', '$2y$10$YJ4D7TkiRQXkzVx0J5dK3ORJ9EsRMI3RJUHncnYqa0YPtE49iwzzy', 2, NULL, '2025-08-09 22:22:00', 1, 'student', '2025-08-30 03:14:34', NULL, NULL),
-(17, 'sow', 'Elhadji Sow', 'diarraa@gmail.com', '$2y$10$ZtaYyWG/ypsO4Ec9GgVl7.S6jyDWrP9.hfZpNc9pBQfjBT8PFvdqy', 2, NULL, '2025-08-19 21:20:05', 1, 'student', '2025-08-30 03:14:34', NULL, NULL),
-(19, 'Vilan', 'Hady', 'vilane@gmail.com', '$2y$10$50tl6QVt5rtnYX./Nqmu6ORABlDBxhYn09B5HBRs6LrbHWOafi7e2', 1, 1, '2025-08-19 21:26:40', 1, 'student', '2025-08-30 03:14:34', NULL, NULL),
-(20, 'Bassoum', 'Haw oumar', 'bassoum@gmail.com', '$2y$10$kyNdcEmnGGLf4Rq9Wf77muuXrrymVFWCu5BKeWRv4xjJVWLzsjHZW', 2, NULL, '2025-08-19 21:28:10', 1, 'student', '2025-08-30 03:14:34', NULL, NULL),
-(21, 'fall', 'awa', 'falla@gmail.com', '$2y$10$oaPo0N/2JvJzJ1YH2RZrjujtLCCA9LgBp1209WqTXbliU0Z.rn85.', 2, NULL, '2025-08-20 13:59:57', 1, 'student', '2025-08-30 03:14:34', NULL, NULL),
-(22, 'sow', 'Elhadji', 'so0ow@gmail.com', '$2y$10$251wdIU5IE5OJjShjARDJe5.eyCxN3AWAUaZEDmttvavM.goRRqNW', 3, NULL, '2025-08-21 23:23:53', 1, 'student', '2025-08-30 03:14:34', NULL, NULL),
-(27, 'sow', 'Elhadji', 'ba@gmail.com', '$2y$10$k48NoK2GDmfshvB1YWouhe2UKdDjlCi/tpkBDMRH.vBFAW7ehdKvy', 2, 13, '2025-08-30 03:43:28', 1, 'student', '2025-08-30 03:43:28', NULL, NULL),
-(28, 'Diallo', 'Nouhou diallo', 'n@gmail.com', '$2y$10$1ST1j3Y5mW/Ea1TGdBN0ZeB9PKzrRmSjRb0O370UG4HVaRUTTEVFW', 2, 1, '2025-08-30 13:56:42', 1, 'etudiant', '2025-08-30 13:56:42', NULL, NULL),
-(30, 'sow', 'Elhadji', 'm@gmail.com', '$2y$10$bZRb0uZvzoiIK44shtLmb.rOTNCxWnyxumVymtgaeMHaRjzea/JS6', 3, NULL, '2025-08-30 20:04:31', 1, 'student', '2025-08-30 20:04:31', NULL, NULL),
-(31, 'konate', 'salif', 's@gmail.com', '$2y$10$lARNoPuYOksTCkx/dluSNujFahkedjAdYibkL0khuHulo9ZDB9p56', 2, 1, '2025-08-30 21:28:19', 1, 'student', '2025-08-30 21:28:19', NULL, NULL),
-(32, 'sow', 'Issa', 'b@gmail.com', '$2y$10$31XXSuAogD1nCpC/XP3CxOSsTOjSrpaX5uhjidlOBgK2c7AEosNU6', 2, 5, '2025-08-30 21:30:57', 1, 'student', '2025-08-30 21:30:57', NULL, NULL),
-(33, 'keita', 'Doudou', 'd@gmail.com', '$2y$10$e7CyESzlOIM1hOzVrP511..MUndCWDYbOiXorS4kVtAccaFcEPFfO', 1, 1, '2025-08-31 00:55:25', 1, 'student', '2025-08-31 00:55:25', NULL, NULL),
-(34, 'sow', 'Elhadji', 'u@gmail.com', '$2y$10$4fH4/eP0E2CucXr0J82U7.ChBVJQ3/idIHGbosd2Hp4dmrGg5vOUu', 1, 15, '2025-08-31 01:20:37', 1, 'student', '2025-08-31 01:20:37', NULL, NULL),
-(35, 'fall', 'Ahmadou', 'h@gmail.com', '$2y$10$agoKOTA3kXotlSQohH2hu.X4cen7gycK.pVmoTMCcTPZ3RY92y8r2', 1, 14, '2025-08-31 01:33:46', 1, 'student', '2025-08-31 01:33:46', NULL, NULL),
-(36, 'Sow', 'Faly', 'f@gmail.edusndwm.com', '$2y$10$hSIE8xgKvbL7lVfb./C5H.nhGmPIqZvb0XW6a8EqKfa61OV9j9.6G', 1, 1, '2025-08-31 01:44:16', 1, 'student', '2025-08-31 01:44:16', NULL, NULL),
-(37, 'Diarra', 'Mamadou', 'l@gmail.com', '$2y$10$NU/LRL.Y6tKTzRx8goSIhe3bgmD8BX41DsjqXdxNc1peQN/564JXi', 1, 1, '2025-08-31 01:46:04', 1, 'student', '2025-08-31 01:46:04', NULL, NULL),
-(38, 'Diallo', 'Bobo', 'am@gmail.com', '$2y$10$bo.dSRfMFvPCeBptzyqL5uEIcIsR9j15tjLKc6KghGGyxi7Lex1Kq', 2, 1, '2025-08-31 01:54:39', 1, 'student', '2025-08-31 01:54:39', NULL, NULL),
-(40, 'ali', 'Elhadji', 'i@gmail.com', '$2y$10$zZG6HktdZxY5JBl73QZrKeEpEqNLZAkZrNtvFkJW1yi8VvHAQE0hu', 1, 1, '2025-09-03 20:48:05', 1, 'student', '2025-09-03 20:48:05', NULL, ''),
-(41, 'Bassoum', 'Elhadji', 'x@gmail.com', '$2y$10$XFVPWFLKkpDqSa3QrY7ql./2ImfVKig4FF/5V5Pnz4KE.3TOG/sMO', 1, 1, '2025-09-03 20:52:48', 1, 'student', '2025-09-03 20:52:48', NULL, '2'),
-(42, 'konate', 'Ablaye', 'e@gmail.com', '$2y$10$GVVH84i4Rajaxig8nBKi4uqt8sBLKC.j.kSr4URwUfCq4KyBSNA3i', 1, 1, '2025-09-03 21:03:48', 1, 'student', '2025-09-03 21:03:48', NULL, '2'),
-(43, 'sow', 'Elhadji', 'v@gmail.com', '$2y$10$NhjyNMQj/v6vUWtQCUbjLOroZmcFDM57q.kduTQclSBo.MvowdxxC', 1, 1, '2025-09-10 14:59:39', 1, 'student', '2025-09-10 14:59:39', NULL, '1'),
-(44, 'sow', 'Elhadji', 'z@gmail.com', '$2y$10$zhwSDVI2moSQtk39kmgRiOHuwMvIndXL/zGt3irnxRYyvle3A9mbu', 1, 1, '2025-09-11 11:03:59', 1, 'student', '2025-09-11 11:03:59', NULL, '2'),
-(47, 'Ndao', 'Abddalah', 'uu@gmail.com', '$2y$10$qchYztfs2YRLgJJihhSi5u6lTBcr23iqTJ8bilsOtNA.spn7plLqO', 1, 2, '2025-09-17 21:38:19', 1, 'student', '2025-09-17 21:38:19', NULL, '2'),
-(48, 'sow', 'Elhadji', 'nn@gmail.com', '$2y$10$61j8ggnBZcqGbeL5CLLCueg5XxsgReEc07XNY3bL7XVz/LQR2bnsu', 2, 2, '2025-09-17 21:43:24', 1, 'student', '2025-09-17 21:43:24', NULL, ''),
-(49, 'Gueye', 'Noumbe', 'ee@gmail.com', '$2y$10$Umku3/xJsSAakW5l9L2fP.iW7kieABaq6gXxEVfzaQkxARcmBb4Fy', 1, 14, '2025-09-17 22:20:34', 1, 'student', '2025-09-17 22:20:34', NULL, '1'),
-(50, 'sow', 'Elhadji', 'oo@gmail.com', '$2y$10$.ll1WxSrkCJBKQMiIq2ZkuNrL5ZLhhQONYbp1SIeb/4s7oOUNSYNC', 1, 2, '2025-09-17 22:22:17', 1, 'student', '2025-09-17 22:22:17', NULL, '2'),
-(51, 'sow', 'Elhadji', 'ii@gmail.com', '$2y$10$8JgqFQVdRC6kKvJC/6Szau3p./9YqhgP7pKCtNEVpdVQFPrEM6Wfe', 1, 9, '2025-09-17 22:24:01', 1, 'student', '2025-09-17 22:24:01', NULL, '2'),
-(52, 'sow', 'Elhadji', 'kk@gmail.com', '$2y$10$avk7XAcijNGa3DJxony42enEGGPnBlCsX6hPBoQVHa7DdhNL5V5lW', 1, 2, '2025-09-17 22:36:40', 1, 'student', '2025-09-17 22:36:40', NULL, '1'),
-(53, 'sow', 'Elhadji', 'xn@gmail.com', '$2y$10$ptSh3V.ta6S7egFeJ4Frte962R8Qa7EGdaFT/iOrYKDvHd1dkh58S', 1, 6, '2025-09-17 23:10:49', 1, 'student', '2025-09-17 23:10:49', NULL, '2'),
-(54, 'Ndao', 'Amadou', 'vv@gmail.com', '$2y$10$UiTzYhZkMNOcCmJK3Ob.o.G3zNM8XqtFMwbO2yvp3UOQ2jn3vhakS', 1, 25, '2025-09-18 00:02:21', 1, 'student', '2025-09-18 00:02:21', NULL, '1'),
-(55, 'Ndao', 'Amadou', 'vvv@gmail.com', '$2y$10$.XMdudOQkioQjkzmDjZrU.h3ZKyeSrALHK0yLA1cyizT5/57Iq1VS', 2, 25, '2025-09-18 00:04:46', 1, 'student', '2025-09-18 00:04:46', NULL, ''),
-(56, 'Ndiaye', 'Monsieur', 'nd@gmail.com', '$2y$10$QeyW4jhGAYGl0Oguaf87zOWHKTh5jALnj1Vcl9qTOTU0PJWc1tu0y', 1, 25, '2025-09-18 00:13:12', 1, 'student', '2025-09-18 00:13:12', NULL, '1'),
-(57, 'fall', 'Moussa', 'ss@gmail.com', '$2y$10$N9cPwpPsxrEIW10p/gtSeuJBJS8LzLw97Eul/LbKcU/qU8e85iLsK', 1, 1, '2025-09-18 01:47:23', 1, 'student', '2025-09-18 01:47:23', NULL, '1'),
-(58, 'ba', 'Fanta', 'gg@gmail.com', '$2y$10$6ZNCh.LZrWmSX4UpP8hvru5GJ9EayAg9eY9k7IXr9adBBQ0.XWOrW', 1, 24, '2025-09-18 01:49:50', 1, 'student', '2025-09-18 01:49:50', NULL, '1'),
-(59, 'sow', 'Elhadji', 'ggg@gmail.com', '$2y$10$K4g9XseXvjKhK0Wd8wkDD.vnc9Z4p6STr30NinZKpzV/.VODuyimW', 2, 24, '2025-09-18 01:50:31', 1, 'student', '2025-09-18 01:50:31', NULL, ''),
-(60, 'sow', 'Elhadji', 'gggg@gmail.com', '$2y$10$TXK7OCR0HyfQvm/VaLQUD.qf7L1xYd8yNFp8kRiDH9AwA0G5r0gvW', 1, 24, '2025-09-18 01:53:52', 1, 'etudiant', '2025-09-18 01:53:52', NULL, '2'),
-(61, 'Fadal', 'Niang', 'fadal.isep@gmail.com', '$2y$10$KbbP5rJROpdp2zT9XYPfqepgKKwoFMf/tPGoYg9nwkHIEF0Gw4Cvi', 1, 1, '2025-09-23 04:50:14', 1, 'student', '2025-09-23 04:50:14', NULL, '2'),
-(62, 'sow', 'Elhadji', 'eiu@gmail.com', '$2y$10$9dbPGHwkxY.YL8PPZHlAJehMBNCeKzctKMtF5TP6xMejxnqLhuJ1a', 1, 31, '2025-09-29 12:48:20', 1, 'student', '2025-09-29 12:48:20', NULL, NULL);
+INSERT INTO `users` (`id`, `nom`, `prenom`, `email`, `password`, `role_id`, `filiere_id`, `date_creation`, `actif`, `role`, `created_at`, `nom_filiere`, `annee`, `user_type`) VALUES
+(2, 'sow', 'fallou', 'fallou@gmail.com', '$2y$10$/DAn2Q6QekSpOXeQrlSiqu8HWWu0q1tJOHfvO/r7c6kYL5mDM7E86', 1, 1, '2025-08-08 17:18:38', 1, 'student', '2025-08-30 03:14:34', NULL, NULL, NULL),
+(3, 'sow', 'Elhadji', 'isa@gmail.com', '$2y$10$BMsSUTS61qy/Ri9U0aJGBussXLAOSWxtiAjuDIGZnngxjzoCmdYUy', 1, 9, '2025-08-08 17:20:31', 1, 'student', '2025-08-30 03:14:34', NULL, NULL, NULL),
+(4, 'sow', 'Elhadji', 'awa@gmail.com', '$2y$10$O3aKN8oh7QMIBHUD9UvyHeMeNOeduK.nLKrlOIIqslTxX5WNDnGtK', 1, 1, '2025-08-08 17:37:08', 1, 'student', '2025-08-30 03:14:34', NULL, NULL, NULL),
+(5, 'sow', 'awa', 'aliou@gmail.com', '$2y$10$BevTWtwEjuG7BvJt9WdRAO6tZIV7r0Q2k2cF8G0y6/P1Xs9QdxHFu', 2, NULL, '2025-08-08 21:17:18', 1, 'student', '2025-08-30 03:14:34', NULL, NULL, NULL),
+(6, 'sow', 'Elhadji', 'aliouu@gmail.com', '$2y$10$tBqNwU0GfPSTf837ZRWD3u/iT.5mJnDQ8CGWT1rGOPd5yNyFmh3mK', 1, 2, '2025-08-08 21:18:29', 1, 'student', '2025-08-30 03:14:34', NULL, NULL, NULL),
+(7, 'sow', 'Elhadji Mamadou Sow', 'sow@gmail.com', '$2y$10$S9oTZbh73ZBne/sS7DOf3OGkLFUe0aGKJCEkM.tABO3ZB5XGQYcvu', 2, NULL, '2025-08-08 22:45:45', 1, 'student', '2025-08-30 03:14:34', NULL, NULL, NULL),
+(8, 'sow', 'Elhadji Mamadou Sow', 'soww@gmail.com', '$2y$10$VY3KL/iEdGRmhONMYY4zBO.m0eHf7GFSXiUZIxpVYFa2ANZr6BJzi', 1, 14, '2025-08-08 22:48:33', 1, 'student', '2025-08-30 03:14:34', NULL, NULL, NULL),
+(9, 'sow', 'Amadou', 'soow@gmail.com', '$2y$10$anhDmCeqwfrlVOQDRbIf7.TxzahF.XVgyz6TfrpdamOkZcENP5sUa', 1, 1, '2025-08-09 01:43:36', 1, 'student', '2025-08-30 03:14:34', NULL, NULL, NULL),
+(10, 'sow', 'fifi', 'fi@gmail.com', '$2y$10$76tmrKBCQq0glGKjg/8kOepLpxULnQHfrBn0r33kBfWB1/nprBBWC', 1, 1, '2025-08-09 01:50:16', 1, 'student', '2025-08-30 03:14:34', NULL, NULL, NULL),
+(11, 'sow', 'isaa', 'aw@gmail.com', '$2y$10$XTk/KkA12n0P3ZMiYIsc.OO4qNwJ3wgtitKv5KTN5UPJCIOOl8InO', 1, 1, '2025-08-09 01:58:23', 1, 'student', '2025-08-30 03:14:34', NULL, NULL, NULL),
+(12, 'sow', 'ma', 'ma@gmail.com', '$2y$10$jpF6LdDUimLzwBiy8HEotu/gTVJUhsh6FJ1HNygcjtkulk2yz/Dvy', 1, 14, '2025-08-09 02:57:59', 1, 'student', '2025-08-30 03:14:34', NULL, NULL, NULL),
+(13, 'Diallo', 'Ami', 'ami@gmail.com', '$2y$10$bP8S/WLMKy4gg3nAiB1HfOxL7tU3eVxiJTvNyvrCAOaQe/QWv0Gpm', 2, NULL, '2025-08-09 22:06:40', 1, 'student', '2025-08-30 03:14:34', NULL, NULL, NULL),
+(15, 'Ndiaye', 'Fallou', 'ndiayee@gmail.com', '$2y$10$YJ4D7TkiRQXkzVx0J5dK3ORJ9EsRMI3RJUHncnYqa0YPtE49iwzzy', 2, NULL, '2025-08-09 22:22:00', 1, 'student', '2025-08-30 03:14:34', NULL, NULL, NULL),
+(17, 'sow', 'Elhadji Sow', 'diarraa@gmail.com', '$2y$10$ZtaYyWG/ypsO4Ec9GgVl7.S6jyDWrP9.hfZpNc9pBQfjBT8PFvdqy', 2, NULL, '2025-08-19 21:20:05', 1, 'student', '2025-08-30 03:14:34', NULL, NULL, NULL),
+(19, 'Vilan', 'Hady', 'vilane@gmail.com', '$2y$10$50tl6QVt5rtnYX./Nqmu6ORABlDBxhYn09B5HBRs6LrbHWOafi7e2', 1, 1, '2025-08-19 21:26:40', 1, 'student', '2025-08-30 03:14:34', NULL, NULL, NULL),
+(20, 'Bassoum', 'Haw oumar', 'bassoum@gmail.com', '$2y$10$kyNdcEmnGGLf4Rq9Wf77muuXrrymVFWCu5BKeWRv4xjJVWLzsjHZW', 2, NULL, '2025-08-19 21:28:10', 1, 'student', '2025-08-30 03:14:34', NULL, NULL, NULL),
+(21, 'fall', 'awa', 'falla@gmail.com', '$2y$10$oaPo0N/2JvJzJ1YH2RZrjujtLCCA9LgBp1209WqTXbliU0Z.rn85.', 2, NULL, '2025-08-20 13:59:57', 1, 'student', '2025-08-30 03:14:34', NULL, NULL, NULL),
+(22, 'sow', 'Elhadji', 'so0ow@gmail.com', '$2y$10$U2aMCe4LHXj.TpUOGTY7YuRfXsG6GIZGxjeW2ycMcgWrcO3YVRuo2', 3, NULL, '2025-08-21 23:23:53', 1, 'etudiant', '2025-08-30 03:14:34', NULL, NULL, NULL),
+(27, 'sow', 'Elhadji', 'ba@gmail.com', '$2y$10$k48NoK2GDmfshvB1YWouhe2UKdDjlCi/tpkBDMRH.vBFAW7ehdKvy', 2, 13, '2025-08-30 03:43:28', 1, 'student', '2025-08-30 03:43:28', NULL, NULL, NULL),
+(28, 'Diallo', 'Nouhou diallo', 'n@gmail.com', '$2y$10$1ST1j3Y5mW/Ea1TGdBN0ZeB9PKzrRmSjRb0O370UG4HVaRUTTEVFW', 2, 1, '2025-08-30 13:56:42', 1, 'etudiant', '2025-08-30 13:56:42', NULL, NULL, NULL),
+(30, 'sow', 'Elhadji', 'm@gmail.com', '$2y$10$bZRb0uZvzoiIK44shtLmb.rOTNCxWnyxumVymtgaeMHaRjzea/JS6', 3, NULL, '2025-08-30 20:04:31', 1, 'student', '2025-08-30 20:04:31', NULL, NULL, NULL),
+(31, 'konate', 'salif', 's@gmail.com', '$2y$10$lARNoPuYOksTCkx/dluSNujFahkedjAdYibkL0khuHulo9ZDB9p56', 2, 1, '2025-08-30 21:28:19', 1, 'student', '2025-08-30 21:28:19', NULL, NULL, NULL),
+(32, 'sow', 'Issa', 'b@gmail.com', '$2y$10$31XXSuAogD1nCpC/XP3CxOSsTOjSrpaX5uhjidlOBgK2c7AEosNU6', 2, 5, '2025-08-30 21:30:57', 1, 'student', '2025-08-30 21:30:57', NULL, NULL, NULL),
+(33, 'keita', 'Doudou', 'd@gmail.com', '$2y$10$e7CyESzlOIM1hOzVrP511..MUndCWDYbOiXorS4kVtAccaFcEPFfO', 1, 1, '2025-08-31 00:55:25', 1, 'student', '2025-08-31 00:55:25', NULL, NULL, NULL),
+(34, 'sow', 'Elhadji', 'u@gmail.com', '$2y$10$4fH4/eP0E2CucXr0J82U7.ChBVJQ3/idIHGbosd2Hp4dmrGg5vOUu', 1, 15, '2025-08-31 01:20:37', 1, 'student', '2025-08-31 01:20:37', NULL, NULL, NULL),
+(35, 'fall', 'Ahmadou', 'h@gmail.com', '$2y$10$agoKOTA3kXotlSQohH2hu.X4cen7gycK.pVmoTMCcTPZ3RY92y8r2', 1, 14, '2025-08-31 01:33:46', 1, 'student', '2025-08-31 01:33:46', NULL, NULL, NULL),
+(36, 'Sow', 'Faly', 'f@gmail.edusndwm.com', '$2y$10$hSIE8xgKvbL7lVfb./C5H.nhGmPIqZvb0XW6a8EqKfa61OV9j9.6G', 1, 1, '2025-08-31 01:44:16', 1, 'student', '2025-08-31 01:44:16', NULL, NULL, NULL),
+(37, 'Diarra', 'Mamadou', 'l@gmail.com', '$2y$10$NU/LRL.Y6tKTzRx8goSIhe3bgmD8BX41DsjqXdxNc1peQN/564JXi', 1, 1, '2025-08-31 01:46:04', 1, 'student', '2025-08-31 01:46:04', NULL, NULL, NULL),
+(38, 'Diallo', 'Bobo', 'am@gmail.com', '$2y$10$bo.dSRfMFvPCeBptzyqL5uEIcIsR9j15tjLKc6KghGGyxi7Lex1Kq', 2, 1, '2025-08-31 01:54:39', 1, 'student', '2025-08-31 01:54:39', NULL, NULL, NULL),
+(40, 'ali', 'Elhadji', 'i@gmail.com', '$2y$10$zZG6HktdZxY5JBl73QZrKeEpEqNLZAkZrNtvFkJW1yi8VvHAQE0hu', 1, 1, '2025-09-03 20:48:05', 1, 'student', '2025-09-03 20:48:05', NULL, '', NULL),
+(41, 'Bassoum', 'Elhadji', 'x@gmail.com', '$2y$10$XFVPWFLKkpDqSa3QrY7ql./2ImfVKig4FF/5V5Pnz4KE.3TOG/sMO', 1, 1, '2025-09-03 20:52:48', 1, 'student', '2025-09-03 20:52:48', NULL, '2', NULL),
+(42, 'konate', 'Ablaye', 'e@gmail.com', '$2y$10$GVVH84i4Rajaxig8nBKi4uqt8sBLKC.j.kSr4URwUfCq4KyBSNA3i', 1, 1, '2025-09-03 21:03:48', 1, 'student', '2025-09-03 21:03:48', NULL, '2', NULL),
+(43, 'sow', 'Elhadji', 'v@gmail.com', '$2y$10$NhjyNMQj/v6vUWtQCUbjLOroZmcFDM57q.kduTQclSBo.MvowdxxC', 1, 1, '2025-09-10 14:59:39', 1, 'student', '2025-09-10 14:59:39', NULL, '1', NULL),
+(44, 'sow', 'Elhadji', 'z@gmail.com', '$2y$10$zhwSDVI2moSQtk39kmgRiOHuwMvIndXL/zGt3irnxRYyvle3A9mbu', 1, 1, '2025-09-11 11:03:59', 1, 'student', '2025-09-11 11:03:59', NULL, '2', NULL),
+(47, 'Ndao', 'Abddalah', 'uu@gmail.com', '$2y$10$qchYztfs2YRLgJJihhSi5u6lTBcr23iqTJ8bilsOtNA.spn7plLqO', 1, 2, '2025-09-17 21:38:19', 1, 'student', '2025-09-17 21:38:19', NULL, '2', NULL),
+(48, 'sow', 'Elhadji', 'nn@gmail.com', '$2y$10$61j8ggnBZcqGbeL5CLLCueg5XxsgReEc07XNY3bL7XVz/LQR2bnsu', 2, 2, '2025-09-17 21:43:24', 1, 'student', '2025-09-17 21:43:24', NULL, '', NULL),
+(49, 'Gueye', 'Noumbe', 'ee@gmail.com', '$2y$10$Umku3/xJsSAakW5l9L2fP.iW7kieABaq6gXxEVfzaQkxARcmBb4Fy', 1, 14, '2025-09-17 22:20:34', 1, 'student', '2025-09-17 22:20:34', NULL, '1', NULL),
+(50, 'sow', 'Elhadji', 'oo@gmail.com', '$2y$10$.ll1WxSrkCJBKQMiIq2ZkuNrL5ZLhhQONYbp1SIeb/4s7oOUNSYNC', 1, 2, '2025-09-17 22:22:17', 1, 'student', '2025-09-17 22:22:17', NULL, '2', NULL),
+(51, 'sow', 'Elhadji', 'ii@gmail.com', '$2y$10$8JgqFQVdRC6kKvJC/6Szau3p./9YqhgP7pKCtNEVpdVQFPrEM6Wfe', 1, 9, '2025-09-17 22:24:01', 1, 'student', '2025-09-17 22:24:01', NULL, '2', NULL),
+(52, 'sow', 'Elhadji', 'kk@gmail.com', '$2y$10$avk7XAcijNGa3DJxony42enEGGPnBlCsX6hPBoQVHa7DdhNL5V5lW', 1, 2, '2025-09-17 22:36:40', 1, 'student', '2025-09-17 22:36:40', NULL, '1', NULL),
+(53, 'sow', 'Elhadji', 'xn@gmail.com', '$2y$10$ptSh3V.ta6S7egFeJ4Frte962R8Qa7EGdaFT/iOrYKDvHd1dkh58S', 1, 6, '2025-09-17 23:10:49', 1, 'student', '2025-09-17 23:10:49', NULL, '2', NULL),
+(54, 'Ndao', 'Amadou', 'vv@gmail.com', '$2y$10$UiTzYhZkMNOcCmJK3Ob.o.G3zNM8XqtFMwbO2yvp3UOQ2jn3vhakS', 1, 25, '2025-09-18 00:02:21', 1, 'student', '2025-09-18 00:02:21', NULL, '1', NULL),
+(55, 'Ndao', 'Amadou', 'vvv@gmail.com', '$2y$10$.XMdudOQkioQjkzmDjZrU.h3ZKyeSrALHK0yLA1cyizT5/57Iq1VS', 2, 25, '2025-09-18 00:04:46', 1, 'student', '2025-09-18 00:04:46', NULL, '', NULL),
+(56, 'Ndiaye', 'Monsieur', 'nd@gmail.com', '$2y$10$QeyW4jhGAYGl0Oguaf87zOWHKTh5jALnj1Vcl9qTOTU0PJWc1tu0y', 1, 25, '2025-09-18 00:13:12', 1, 'student', '2025-09-18 00:13:12', NULL, '1', NULL),
+(57, 'fall', 'Moussa', 'ss@gmail.com', '$2y$10$N9cPwpPsxrEIW10p/gtSeuJBJS8LzLw97Eul/LbKcU/qU8e85iLsK', 1, 1, '2025-09-18 01:47:23', 1, 'student', '2025-09-18 01:47:23', NULL, '1', NULL),
+(58, 'ba', 'Fanta', 'gg@gmail.com', '$2y$10$6ZNCh.LZrWmSX4UpP8hvru5GJ9EayAg9eY9k7IXr9adBBQ0.XWOrW', 1, 24, '2025-09-18 01:49:50', 1, 'student', '2025-09-18 01:49:50', NULL, '1', NULL),
+(59, 'sow', 'Elhadji', 'ggg@gmail.com', '$2y$10$K4g9XseXvjKhK0Wd8wkDD.vnc9Z4p6STr30NinZKpzV/.VODuyimW', 2, 24, '2025-09-18 01:50:31', 1, 'student', '2025-09-18 01:50:31', NULL, '', NULL),
+(60, 'sow', 'Elhadji', 'gggg@gmail.com', '$2y$10$TXK7OCR0HyfQvm/VaLQUD.qf7L1xYd8yNFp8kRiDH9AwA0G5r0gvW', 1, 24, '2025-09-18 01:53:52', 1, 'etudiant', '2025-09-18 01:53:52', NULL, '2', NULL),
+(61, 'Fadal', 'Niang', 'fadal.isep@gmail.com', '$2y$10$KbbP5rJROpdp2zT9XYPfqepgKKwoFMf/tPGoYg9nwkHIEF0Gw4Cvi', 1, 1, '2025-09-23 04:50:14', 1, 'student', '2025-09-23 04:50:14', NULL, '2', NULL),
+(62, 'sow', 'Elhadji', 'eiu@gmail.com', '$2y$10$9dbPGHwkxY.YL8PPZHlAJehMBNCeKzctKMtF5TP6xMejxnqLhuJ1a', 1, 31, '2025-09-29 12:48:20', 1, 'student', '2025-09-29 12:48:20', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1393,6 +1441,12 @@ ALTER TABLE `etudiant`
 ALTER TABLE `exercices`
   ADD PRIMARY KEY (`id`),
   ADD KEY `cours_id` (`cours_id`);
+
+--
+-- Indexes for table `feedback`
+--
+ALTER TABLE `feedback`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `feedbacks`
@@ -1696,7 +1750,7 @@ ALTER TABLE `certificats`
 -- AUTO_INCREMENT for table `cours`
 --
 ALTER TABLE `cours`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
 
 --
 -- AUTO_INCREMENT for table `courses`
@@ -1741,6 +1795,12 @@ ALTER TABLE `exercices`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `feedback`
+--
+ALTER TABLE `feedback`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `feedbacks`
 --
 ALTER TABLE `feedbacks`
@@ -1774,7 +1834,7 @@ ALTER TABLE `lecons`
 -- AUTO_INCREMENT for table `livrables`
 --
 ALTER TABLE `livrables`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `matieres`
@@ -1804,13 +1864,13 @@ ALTER TABLE `messages_forum`
 -- AUTO_INCREMENT for table `messages_projet`
 --
 ALTER TABLE `messages_projet`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `modules`
 --
 ALTER TABLE `modules`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `modules_completed`

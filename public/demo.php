@@ -1173,7 +1173,7 @@ $documents = [
             <p>Découvrez une nouvelle expérience d'apprentissage en ligne avec nos formations de qualité et nos ressources pédagogiques innovantes</p>
             <div>
                 <a href="login.php" class="btn">Commencer maintenant</a>
-               <a href="docs/pdf_68b33c253b6dc.pdf" class="btn btn-outline" target="_blank">Guide d'utilisation</a>
+               <a href="docs/Guide d'utilisation Pltatforme Isep Thies.pdf" class="btn btn-outline" target="_blank">Guide d'utilisation</a>
 
             </div>
         </div>

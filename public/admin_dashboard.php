@@ -1072,7 +1072,7 @@ $quizzes = $quizzStmt->fetchAll(PDO::FETCH_ASSOC);
                     <i class="fa-solid fa-book"></i> Cours
                 </a>
                 <a href="?section=projects" data-section="projects" class="<?= $defaultSection === 'projects' ? 'active' : '' ?>">
-                    <i class="fa-solid fa-briefcase"></i> Projets
+                    <i class="fa-solid fa-briefcase"></i> Projets disponible
                 </a>
                 <a href="?section=quizzes" data-section="quizzes" class="<?= $defaultSection === 'quizzes' ? 'active' : '' ?>">
                     <i class="fa-solid fa-circle-question"></i> Quizzes
@@ -1083,6 +1083,13 @@ $quizzes = $quizzStmt->fetchAll(PDO::FETCH_ASSOC);
 <a href="/lms_isep/public/projet.php" target="_top" onclick="window.location.href='/lms_isep/public/projet.php'; return false;">
     <i class="fa-solid fa-diagram-project"></i> Projets
 </a>
+
+<a href="/lms_isep/public/progression.php" target="_top" onclick="window.location.href='/lms_isep/public/progression.php'; return false;">
+    <i class="fa-solid fa-chart-line"></i> Suivre  progression
+</a>
+
+
+
 
 
             </div>

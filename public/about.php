@@ -290,31 +290,31 @@ include(__DIR__ . '/../includes/header.php');
     <div class="founder">
       <img src="../images/WhatsApp_Image_2025-07-16_a_00.19.02_5da5830e-removebg-preview.png" alt="El Hadji Mamadou Sow">
       <h3>El Hadji Mamadou Sow</h3>
-      <p>Responsable du projet, Technicien en Développement Web & Mobile</p>
+      <p> Technicien Superieur en Développement Web & Mobile</p>
     </div>
 
     <div class="founder">
       <img src="../images/leuz.jpg" alt="Fallou Ndiaye">
       <h3>Fallou Ndiaye</h3>
-      <p>Expert en technologies éducatives et mentor des étudiants</p>
+      <p> Technicien Superieure en Developpeur Web et Moile</p>
     </div>
 
     <div class="founder">
-      <img src="assets/images/fondateur3.jpg" alt="Hady Vilane">
+      <img src="../images/ha.jpg" alt="Hady Vilane">
       <h3>Hady Vilane</h3>
-      <p>Spécialiste en Réseaux & Télécommunications</p>
+      <p> Technicien Suprieur en Developpeur Web et Mobile</p>
     </div>
 
     <div class="founder">
       <img src="../images/bac.jpg" alt="Bacary Biaye">
       <h3>Bacary Biaye</h3>
-      <p>Développeur Full Stack, garant de la performance</p>
+      <p> Technicien Superieur en Développeur Web et Mobile</p>
     </div>
 
     <div class="founder">
       <img src="../images/aw.jpg" alt="Hawa Oumar Bassoum">
       <h3>Hawa Oumar Bassoum</h3>
-      <p>Chargée de communication et coordinatrice des activités</p>
+      <p>Techniciene Superieur en Developpeuse Web et Mobile</p>
     </div>
 
   </div>

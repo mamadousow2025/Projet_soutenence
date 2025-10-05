@@ -343,7 +343,7 @@ if ($role == 'etudiant') {
                u.nom as enseignant_nom, u.prenom as enseignant_prenom
         FROM livrables l
         JOIN taches t ON l.tache_id = t.id
-        LEFT JOIN feedbacks f ON l.id = f.livrable_id
+        LEFT JOIN feedback f ON l.id = f.livrable_id
         LEFT JOIN users u ON f.enseignant_id = u.id
         WHERE l.etudiant_id = ? AND t.projet_id = ?
         ORDER BY l.date_soumission DESC
@@ -351,6 +351,8 @@ if ($role == 'etudiant') {
     $stmt->execute([$user_id, $projet_id]);
     $mes_livrables = $stmt->fetchAll();
 }
+
+
 
 // Si c'est un enseignant, récupérer tous les livrables des étudiants
 $tous_livrables = [];
@@ -553,7 +555,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['envoyer_message']) && 
         
         // Insérer le message dans la base de données
         $stmt = $pdo->prepare("
-            INSERT INTO messages_projet (projet_id, enseignant_id, contenu, type_message, date_envoi) 
+            INSERT INTO messages_projet (projet_id, utilisateur_id, contenu, type_message, date_envoi) 
             VALUES (?, ?, ?, ?, NOW())
         ");
         $stmt->execute([$projet_id, $user_id, $message_contenu, $message_type]);

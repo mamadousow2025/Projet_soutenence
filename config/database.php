@@ -1,8 +1,8 @@
 <?php
 $host = "localhost";
-$dbname = "lms_isep";
-$user = "root";  // à adapter
-$password = "";  // à adapter
+$dbname = "lms_isep"; 
+$user = "root";  // à adapter le nom d'utilisateur
+$password = "";  // à adapter mot de passe pour la base de données
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $user, $password);

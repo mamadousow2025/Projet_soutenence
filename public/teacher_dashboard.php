@@ -240,7 +240,7 @@ $modules_count = $stmt->fetchColumn() ?: 0;
             <a href="feedback.php" class="flex items-center gap-3 p-3 rounded hover:bg-accent transition">
                 <i data-feather="edit-3"></i> Correction & Feedback
             </a>
-            <a href="#" class="flex items-center gap-3 p-3 rounded hover:bg-accent transition">
+            <a href="progression.php" class="flex items-center gap-3 p-3 rounded hover:bg-accent transition">
                 <i data-feather="trending-up"></i> Suivi des progrès
             </a>
            
